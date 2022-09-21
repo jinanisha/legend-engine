@@ -13,14 +13,50 @@
 // limitations under the License.
 
 ###Pure
+import meta::pure::extension::*;
 import meta::external::store::service::metamodel::*;
 import meta::external::store::service::metamodel::runtime::*;
+import meta::pure::functions::collection::*;
 
-function meta::protocols::pure::vX_X_X::transformation::fromPureGraph::connection::store::service::transformServiceStoreConnection(connection: ServiceStoreConnection[1]):meta::protocols::pure::vX_X_X::metamodel::connection::store::service::ServiceStoreConnection[1]
+function meta::protocols::pure::vX_X_X::transformation::fromPureGraph::connection::store::service::transformServiceStoreConnection(connection: ServiceStoreConnection[1],extensions:meta::pure::extension::Extension[*]):meta::protocols::pure::vX_X_X::metamodel::connection::store::service::ServiceStoreConnection[1]
 {
    ^meta::protocols::pure::vX_X_X::metamodel::connection::store::service::ServiceStoreConnection(
       _type   = 'serviceStore',
       element = $connection.element->cast(@ServiceStore)->elementToPath(),
-      baseUrl = $connection.baseUrl
+      baseUrl = $connection.baseUrl,
+      authSpecs = $connection.authSpecs->toOne()->keyValues()->map(e | pair($e.first, $e.second->meta::protocols::pure::vX_X_X::transformation::fromPureGraph::connection::store::service::transformAuthentication($extensions)))->newMap()
    );
+}
+
+function meta::protocols::pure::vX_X_X::transformation::fromPureGraph::connection::store::service::transformAuthentication(a:Authentication[1], extensions:Extension[*]):meta::protocols::pure::vX_X_X::metamodel::connection::store::service::Authentication[1]
+{
+   $a->match($extensions.serializerExtension('vX_X_X')->cast(@meta::protocols::pure::vX_X_X::extension::SerializerExtension_vX_X_X).moduleSerializerExtension('serviceStore')->cast(@meta::protocols::pure::vX_X_X::extension::store::service::ServiceStoreModuleSerializerExtension).transfers_authentication_transformAuthentication->concatenate([
+      o:meta::external::store::service::metamodel::runtime::OauthAuthentication [1] |
+        ^meta::protocols::pure::vX_X_X::metamodel::connection::store::service::OauthAuthentication(
+            _type = 'oauth',
+            //associatedSecurityScheme = $o.associatedSecurityScheme,
+            grantType = $o.grantType->toString(),
+            clientId = $o.clientId,
+            clientSecretVaultReference = $o.clientSecretVaultReference,
+            authServerUrl = $o.authServerUrl
+        ),
+      u:meta::external::store::service::metamodel::runtime::UsernamePasswordAuthentication [1] |
+                ^meta::protocols::pure::vX_X_X::metamodel::connection::store::service::UsernamePasswordAuthentication(
+                    _type = 'basic',
+                    //associatedSecurityScheme = $u.associatedSecurityScheme,
+                    username = $u.username,
+                    password = $u.password
+                ),
+      a:meta::external::store::service::metamodel::runtime::ApiKeyAuthentication [1] |
+                          ^meta::protocols::pure::vX_X_X::metamodel::connection::store::service::ApiKeyAuthentication(
+                              _type = 'apiKey',
+                              //associatedSecurityScheme = $u.associatedSecurityScheme,
+                              value = $a.value
+                          ),
+      other: meta::external::store::service::metamodel::runtime::Authentication[1] |
+         ^meta::protocols::pure::vX_X_X::metamodel::connection::store::service::Authentication(
+            //associatedSecurityScheme = 'unknown',
+            _type = 'unknown'
+         )
+   ])->toOneMany())
 }

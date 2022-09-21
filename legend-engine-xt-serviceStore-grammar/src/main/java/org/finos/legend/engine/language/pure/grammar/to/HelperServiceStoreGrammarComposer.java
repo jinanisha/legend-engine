@@ -14,10 +14,13 @@
 
 package org.finos.legend.engine.language.pure.grammar.to;
 
+import org.eclipse.collections.api.block.function.Function2;
 import org.eclipse.collections.impl.list.mutable.ListAdapter;
+import org.eclipse.collections.impl.utility.LazyIterate;
 import org.eclipse.collections.impl.utility.ListIterate;
 import org.finos.legend.engine.protocol.pure.v1.model.SourceInformation;
 import org.finos.legend.engine.protocol.pure.v1.model.context.EngineErrorType;
+import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.connection.ServiceStoreConnection;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.mapping.LocalMappingProperty;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.mapping.RootServiceStoreClassMapping;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.mapping.ServiceMapping;
@@ -25,28 +28,17 @@ import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.s
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.mapping.ServiceRequestBuildInfo;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.mapping.ServiceRequestParameterBuildInfo;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.mapping.ServiceRequestParametersBuildInfo;
-import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.BooleanTypeReference;
-import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.ComplexTypeReference;
-import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.FloatTypeReference;
-import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.IntegerTypeReference;
-import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.SecurityScheme;
-import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.Service;
-import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.ServiceGroup;
-import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.ServiceGroupPtr;
-import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.ServiceParameter;
-import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.ServicePtr;
-import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.ServiceStore;
-import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.ServiceStoreElement;
-import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.StringTypeReference;
-import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.TypeReference;
+import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.*;
 import org.finos.legend.engine.shared.core.operational.errorManagement.EngineException;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static org.finos.legend.engine.language.pure.grammar.from.ServiceStoreParseTreeWalker.SERVICE_MAPPING_PATH_PREFIX;
+import static org.finos.legend.engine.language.pure.grammar.to.PureGrammarComposerUtility.convertString;
 import static org.finos.legend.engine.language.pure.grammar.to.PureGrammarComposerUtility.getTabString;
+import static org.finos.legend.engine.language.pure.grammar.to.PureGrammarComposerUtility.unsupported;
 
 public class HelperServiceStoreGrammarComposer
 {
@@ -61,10 +53,33 @@ public class HelperServiceStoreGrammarComposer
         {
             builder.append("description : ").append("'").append(serviceStore.description).append("'").append(";\n\n");
         }
+
+        renderSecuritySchemes(serviceStore.securitySchemes, builder, baseIndentation);
         renderServiceStoreElements(serviceStore.elements, builder, baseIndentation);
 
         builder.append(")");
         return builder.toString();
+    }
+
+    public static void renderSecuritySchemes(List<SecurityScheme> securitySchemes, StringBuilder builder, int baseIndentation)
+    {
+        if (securitySchemes!=null  && !securitySchemes.isEmpty())
+        {
+            builder.append(getTabString(baseIndentation + 1)).append("SecuritySchemes ").append(": ").append("[\n").append(LazyIterate.collect(securitySchemes, s -> renderSecurityScheme(s, baseIndentation + 2)).makeString(",\n")).append("\n").append(getTabString()).append("];\n");
+        }
+    }
+
+    public static String renderAuthSpecs (ServiceStoreConnection serviceStoreConnection, PureGrammarComposerContext context)
+    {
+        if (serviceStoreConnection.authSpecs!=null)
+        {
+            return "\n" + context.getIndentationString() + getTabString() + "auth: [\n" +
+                    serviceStoreConnection. authSpecs.entrySet().stream().map(entry
+                            -> HelperServiceStoreGrammarComposer .renderAuthentication(entry.getKey(), entry.getValue(), 2))
+                            .collect (Collectors. joining(",\n")) +
+                          "\n" + context.getIndentationString() + getTabString() + "];";
+        }
+        return "";
     }
 
     private static void renderServiceStoreElements(List<ServiceStoreElement> elements, StringBuilder builder, int baseIndentation)
@@ -105,7 +120,7 @@ public class HelperServiceStoreGrammarComposer
         }
         builder.append(getTabString(baseIndentation + 1)).append("response : ").append(renderTypeReference(service.response)).append(";\n");
         builder.append(getTabString(baseIndentation + 1)).append("security : [")
-                .append(String.join(",", ListIterate.collect(service.security, HelperServiceStoreGrammarComposer::renderAuthenticationStrategy)))
+                .append(String.join(",", ListIterate.collect(service.security, s -> renderSecurity(s,baseIndentation))))
                 .append("];\n");
 
         builder.append(getTabString(baseIndentation)).append(")\n");
@@ -195,16 +210,25 @@ public class HelperServiceStoreGrammarComposer
         return builder.toString();
     }
 
-    private static String renderAuthenticationStrategy(SecurityScheme securityScheme)
+    private static String renderSecurityScheme(SecurityScheme securityScheme, int baseIndentation)
     {
-        List<Function<SecurityScheme, String>> processors = ListIterate.flatCollect(IServiceStoreGrammarComposerExtension.getExtensions(), ext -> ext.getExtraSecuritySchemesComposers());
+        List<Function2<SecurityScheme, Integer, String>> processors = ListIterate.flatCollect(IServiceStoreGrammarComposerExtension.getExtensions(), ext -> ext.getExtraSecuritySchemesComposers());
 
-        return ListIterate
-                .collect(processors, processor -> processor.apply(securityScheme))
+        return ListIterate.collect(processors, processor -> processor.apply(securityScheme,baseIndentation))
                 .select(Objects::nonNull)
                 .getFirstOptional()
-                .orElseThrow(() -> new EngineException("Unsupported SecurityScheme - " + securityScheme.getClass().getSimpleName(), securityScheme.sourceInformation, EngineErrorType.PARSER));
+                .orElseThrow(() -> new EngineException("Unsupported securityScheme - " + securityScheme.getClass().getSimpleName(), securityScheme.sourceInformation,EngineErrorType.PARSER));
     }
+
+    private static String renderSecurity(SecurityScheme securityScheme, int baseIndentation)
+    {
+        if (securityScheme instanceof IdentifiedSecurityScheme)
+        {
+            return ((IdentifiedSecurityScheme) securityScheme).id;
+        }
+        return unsupported(securityScheme.getClass(), "Security Scheme type");
+
+         }
 
     // -------------------------------------- CLASS MAPPING --------------------------------------
 
@@ -319,5 +343,41 @@ public class HelperServiceStoreGrammarComposer
         {
             return renderServiceGroupPath(serviceGroupPtr.parent) + "." + serviceGroupPtr.serviceGroup;
         }
+    }
+
+    public static String renderAuthentication(String securityScheme, AuthenticationSpecification a, int baseIndentation)
+    {
+        if (a instanceof OAuthAuthentication)
+        {
+            OAuthAuthentication spec = (OAuthAuthentication) a;
+            return getTabString(baseIndentation) + securityScheme +
+                    " : OauthAuthentication" +
+                    getTabString(baseIndentation) + "{\n" +
+                    getTabString(baseIndentation + 1) + "grantType : " + convertString(spec.grantType.toString(), true) + ";\n" +
+                    getTabString(baseIndentation + 1) + "clientId : " + convertString(spec.clientId, true) + ";\n" +
+                    getTabString(baseIndentation + 1) + "clientSecretVaultReference : " + convertString(spec.clientSecretVaultReference, true) + ";\n" +
+                    getTabString(baseIndentation + 1) + "authorizationServerUrl : " + convertString(spec.authServerUrl, true) + ";\n" +
+                    getTabString(baseIndentation) + "}";
+        }
+        else if (a instanceof UsernamePasswordAuthentication)
+        {
+            UsernamePasswordAuthentication spec = (UsernamePasswordAuthentication) a;
+            return  getTabString(baseIndentation) + securityScheme +
+                    " : UsernamePasswordAuthentication\n" +
+                    getTabString(baseIndentation) + "{\n" +
+                    getTabString(baseIndentation + 1) + "username : " + convertString(spec.username.toString(), true) + ";\n" +
+                    getTabString(baseIndentation + 1) + "password : " + convertString(spec.password.toString(), true) + ";\n" +
+                    getTabString(baseIndentation) + "}";
+        }
+        else if (a instanceof ApiKeyAuthentication)
+        {
+            ApiKeyAuthentication spec = (ApiKeyAuthentication) a;
+            return  getTabString(baseIndentation) + securityScheme +
+                    " : ApiKeyAuthentication\n" +
+                    getTabString(baseIndentation) + "{\n" +
+                    getTabString(baseIndentation + 1) + "value : " + convertString(spec.value.toString(), true) + ";\n" +
+                    getTabString(baseIndentation) + "}";
+        }
+        return null;
     }
 }
