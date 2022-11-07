@@ -36,6 +36,8 @@
         -->
         <module>legend-engine-test-reports</module>
 
+        <module>legend-engine-authentication-pure</module>
+
         <module>legend-engine-xt-graphQL-grammar</module>
         <module>legend-engine-xt-graphQL-grammar-integration</module>
         <module>legend-engine-xt-graphQL-compiler</module>

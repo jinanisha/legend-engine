@@ -45,7 +45,6 @@ import meta::external::store::service::functions::pureToServiceStoreQuery::*;
 import meta::external::store::service::router::systemMapping::*;
 import meta::external::store::service::utils::helperFunction::*;
 import meta::pure::functions::collection::*;
-import meta::external::store::service::metamodel::runtime::*;
 
 function meta::external::store::service::executionPlan::generation::planRootGraphFetchExecutionServiceStore(sq: StoreQuery[1], ext: RoutedValueSpecification[0..1], clusteredTree: ClusteredGraphFetchTree[1], orderedPaths: String[*], mapping: Mapping[1], runtime: Runtime[1], exeCtx: ExecutionContext[1], enableConstraints: Boolean[1], checked: Boolean[1], extensions: meta::pure::extension::Extension[*], debug: DebugContext[1]): InMemoryRootGraphFetchExecutionNode[1]
 {

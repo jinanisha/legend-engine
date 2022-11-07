@@ -14,7 +14,6 @@
 
 import meta::pure::runtime::*;
 import meta::external::store::service::metamodel::*;
-import meta::external::store::service::metamodel::runtime::*;
 import meta::pure::authentication::*;
 
 Class meta::external::store::service::metamodel::runtime::ServiceStoreConnection extends Connection
@@ -25,4 +24,3 @@ Class meta::external::store::service::metamodel::runtime::ServiceStoreConnection
    baseUrl: String[1];
    authSpecs: Map<String,Authentication>[0..1];
 }
-
