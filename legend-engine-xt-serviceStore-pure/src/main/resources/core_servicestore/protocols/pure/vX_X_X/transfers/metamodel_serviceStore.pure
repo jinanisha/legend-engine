@@ -16,7 +16,6 @@
 import meta::pure::extension::*;
 import meta::external::store::service::metamodel::*;
 import meta::protocols::pure::vX_X_X::transformation::fromPureGraph::store::service::*;
-import meta::protocols::pure::vX_X_X::transformation::fromPureGraph::connection::store::service::*;
 import meta::pure::functions::collection::*;
 
 function meta::protocols::pure::vX_X_X::transformation::fromPureGraph::store::service::transformServiceStore(s:ServiceStore[1], extensions:meta::pure::extension::Extension[*]):meta::protocols::pure::vX_X_X::metamodel::store::service::ServiceStore[1]
