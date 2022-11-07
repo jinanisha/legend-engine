@@ -50,6 +50,12 @@ Class meta::external::store::service::metamodel::runtime::ApiKeyAuthentication e
    value: String[1];
 }
 
+Class meta::external::store::service::metamodel::runtime::Credential
+{
+
+}
+
+
 //Enum meta::external::store::service::metamodel::runtime::OauthGrantType
 //{
 //   ClientCredentials
