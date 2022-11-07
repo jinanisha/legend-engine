@@ -345,7 +345,7 @@ public class HelperServiceStoreGrammarComposer
         }
     }
 
-    public static String renderAuthentication(String securityScheme, AuthenticationSpecification a, int baseIndentation)
+    public static String renderAuthentication(String securityScheme, Authentication a, int baseIndentation)
     {
         if (a instanceof OAuthAuthentication)
         {

@@ -195,7 +195,7 @@ public class HelperServiceStoreBuilder
         {
             Root_meta_external_store_service_metamodel_ServiceStore pureServiceStore = HelperServiceStoreBuilder.getServiceStore(serviceStoreConnection.element, serviceStoreConnection.elementSourceInformation, context);
             String securitySchemeId = entry.getKey();
-            AuthenticationSpecification authSpec = entry.getValue();
+            Authentication authSpec = entry.getValue();
 
             validateSecurityScheme(securitySchemeId,authSpec,pureServiceStore,serviceStoreConnection.sourceInformation);
 
@@ -234,7 +234,7 @@ public class HelperServiceStoreBuilder
         }).collect(Collectors.toList());
     }
 
-    private static void validateSecurityScheme(String id, AuthenticationSpecification authSpec, Root_meta_external_store_service_metamodel_ServiceStore pureServiceStore, SourceInformation sourceInformation)
+    private static void validateSecurityScheme(String id, Authentication authSpec, Root_meta_external_store_service_metamodel_ServiceStore pureServiceStore, SourceInformation sourceInformation)
     {
         Root_meta_external_store_service_metamodel_SecurityScheme_Impl securityScheme = (Root_meta_external_store_service_metamodel_SecurityScheme_Impl) pureServiceStore._securitySchemes().getMap().get(id);
         if(securityScheme == null)

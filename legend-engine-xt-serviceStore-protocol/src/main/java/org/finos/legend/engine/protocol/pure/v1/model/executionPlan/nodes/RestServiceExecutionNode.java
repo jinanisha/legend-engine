@@ -14,7 +14,7 @@
 
 package org.finos.legend.engine.protocol.pure.v1.model.executionPlan.nodes;
 
-import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.AuthenticationSpecification;
+import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.Authentication;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.HttpMethod;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.SecurityScheme;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.ServiceParameter;
@@ -30,7 +30,7 @@ public class RestServiceExecutionNode extends ExecutionNode
     public List<ServiceParameter> params;
     public RequestBodyDescription requestBodyDescription;
     public List<SecurityScheme> securitySchemes;
-    public Map<String, AuthenticationSpecification> authSpecs;
+    public Map<String, Authentication> authSpecs;
 
     @Override
     public <T> T accept(ExecutionNodeVisitor<T> executionNodeVisitor)

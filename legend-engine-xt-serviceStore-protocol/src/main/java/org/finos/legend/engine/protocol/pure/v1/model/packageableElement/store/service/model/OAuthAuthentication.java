@@ -1,6 +1,6 @@
 package org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model;
 
-public class OAuthAuthentication extends AuthenticationSpecification
+public class OAuthAuthentication extends Authentication
 {
     public String grantType;
     public String clientId;

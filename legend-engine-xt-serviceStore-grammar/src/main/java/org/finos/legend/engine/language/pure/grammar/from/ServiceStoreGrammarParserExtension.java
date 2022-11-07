@@ -42,7 +42,7 @@ import org.finos.legend.engine.protocol.pure.v1.model.context.EngineErrorType;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.section.DefaultCodeSection;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.connection.ServiceStoreConnection;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.mapping.RootServiceStoreClassMapping;
-import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.AuthenticationSpecification;
+import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.Authentication;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.SecurityScheme;
 import org.finos.legend.engine.shared.core.operational.errorManagement.EngineException;
 import org.finos.legend.engine.language.pure.grammar.from.antlr4.connection.authentication.AuthSpecificationLexerGrammar;
@@ -134,7 +134,7 @@ public class ServiceStoreGrammarParserExtension implements IServiceStoreGrammarP
         });
     }
 
-    public List<Function<AuthenticationSpecificationSourceCode, AuthenticationSpecification>> getExtraAuthenticationGenerationSpecificationParsers()
+    public List<Function<AuthenticationSpecificationSourceCode, Authentication>> getExtraAuthenticationGenerationSpecificationParsers()
     {
         return Collections.singletonList(code ->
         {
@@ -215,7 +215,7 @@ public class ServiceStoreGrammarParserExtension implements IServiceStoreGrammarP
         return func.apply(parser);
     }
 
-    private AuthenticationSpecification parseAuthentication(AuthenticationSpecificationSourceCode code, Function<AuthSpecificationParserGrammar, AuthenticationSpecification> func)
+    private Authentication parseAuthentication(AuthenticationSpecificationSourceCode code, Function<AuthSpecificationParserGrammar, Authentication> func)
     {
         CharStream input = CharStreams.fromString(code.getCode());
         ParserErrorListener errorListener = new ParserErrorListener(code.getWalkerSourceInformation());

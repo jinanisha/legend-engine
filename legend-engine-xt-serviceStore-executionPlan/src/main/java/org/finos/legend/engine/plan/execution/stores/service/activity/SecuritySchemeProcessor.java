@@ -24,11 +24,11 @@ import java.util.Map;
 public class SecuritySchemeProcessor
 {
     private HttpClientBuilder httpClientBuilder;
-    private AuthenticationSpecification authSpecification;
+    private Authentication authSpecification;
     private RequestBuilder requestBuilder;
     private MutableList<CommonProfile> profiles;
 
-    public SecuritySchemeProcessor(AuthenticationSpecification authSpecification, HttpClientBuilder httpClientBuilder, RequestBuilder requestBuilder, MutableList<CommonProfile> profiles)
+    public SecuritySchemeProcessor(Authentication authSpecification, HttpClientBuilder httpClientBuilder, RequestBuilder requestBuilder, MutableList<CommonProfile> profiles)
     {
         this.authSpecification = authSpecification;
         this.httpClientBuilder = httpClientBuilder;

@@ -25,7 +25,7 @@ import org.finos.legend.engine.language.pure.grammar.from.extensions.IServiceSto
 import org.finos.legend.engine.protocol.pure.v1.model.SourceInformation;
 import org.finos.legend.engine.protocol.pure.v1.model.context.EngineErrorType;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.connection.ServiceStoreConnection;
-import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.AuthenticationSpecification;
+import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.Authentication;
 import org.finos.legend.engine.shared.core.operational.errorManagement.EngineException;
 
 import java.util.Collections;
@@ -69,7 +69,7 @@ public class ServiceStoreConnectionParseTreeWalker
         }
     }
 
-    private Pair<String, AuthenticationSpecification> visitAuthentication(ServiceStoreConnectionParserGrammar.AuthSpecificationObjectContext ctx)
+    private Pair<String, Authentication> visitAuthentication(ServiceStoreConnectionParserGrammar.AuthSpecificationObjectContext ctx)
     {
         SourceInformation sourceInformation = walkerSourceInformation.getSourceInformation(ctx);
 
@@ -83,7 +83,7 @@ public class ServiceStoreConnectionParseTreeWalker
 
 
         List<IServiceStoreGrammarParserExtension> extensions = IServiceStoreGrammarParserExtension.getExtensions();
-        AuthenticationSpecification spec = IServiceStoreGrammarParserExtension.process(code, ListIterate.flatCollect(extensions, IServiceStoreGrammarParserExtension::getExtraAuthenticationGenerationSpecificationParsers));
+        Authentication spec = IServiceStoreGrammarParserExtension.process(code, ListIterate.flatCollect(extensions, IServiceStoreGrammarParserExtension::getExtraAuthenticationGenerationSpecificationParsers));
 
         if (spec == null)
         {

@@ -28,7 +28,7 @@ import org.finos.legend.engine.language.pure.grammar.from.connection.authenticat
 import org.finos.legend.engine.language.pure.grammar.from.connection.authentication.SecuritySchemeSourceCode;
 import org.finos.legend.engine.language.pure.grammar.from.extension.PureGrammarParserExtension;
 import org.finos.legend.engine.protocol.pure.v1.model.context.EngineErrorType;
-import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.AuthenticationSpecification;
+import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.Authentication;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.IdentifiedSecurityScheme;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.SecurityScheme;
 import org.finos.legend.engine.shared.core.operational.errorManagement.EngineException;
@@ -57,7 +57,7 @@ public interface IServiceStoreGrammarParserExtension extends PureGrammarParserEx
 
     }
 
-    static AuthenticationSpecification process(AuthenticationSpecificationSourceCode code, List<Function<AuthenticationSpecificationSourceCode, AuthenticationSpecification>> processors)
+    static Authentication process(AuthenticationSpecificationSourceCode code, List<Function<AuthenticationSpecificationSourceCode, Authentication>> processors)
     {
         return process(code, processors, "Auth Token Generation Specification");
     }
@@ -67,7 +67,7 @@ public interface IServiceStoreGrammarParserExtension extends PureGrammarParserEx
         return Collections.emptyList();
     }
 
-    default List<Function<AuthenticationSpecificationSourceCode, AuthenticationSpecification>> getExtraAuthenticationGenerationSpecificationParsers()
+    default List<Function<AuthenticationSpecificationSourceCode, Authentication>> getExtraAuthenticationGenerationSpecificationParsers()
     {
         return Collections.emptyList();
     }

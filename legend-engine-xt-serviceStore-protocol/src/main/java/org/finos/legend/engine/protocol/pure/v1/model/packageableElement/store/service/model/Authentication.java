@@ -9,7 +9,7 @@ import org.finos.legend.engine.protocol.pure.v1.model.SourceInformation;
             @JsonSubTypes.Type(value = UsernamePasswordAuthentication.class, name = "basic" ),
             @JsonSubTypes.Type(value = ApiKeyAuthentication.class, name = "apiKey")
     })
-public class AuthenticationSpecification {
+public class Authentication {
 
     public SourceInformation sourceInformation;
 }
