@@ -46,7 +46,7 @@ function meta::protocols::pure::vX_X_X::extension::store::service::getServiceSto
                    method           = $ser.method,
                    mimeType         = $ser.mimeType,
                    securitySchemes  = $ser.securitySchemes->map(s | $s->meta::protocols::pure::vX_X_X::transformation::fromPureGraph::store::service::transformSecurityScheme($extensions)),
-                   authSpecs        = $ser.authSpecs->toOne()->keyValues()->map(kv | pair($kv.first,$kv.second->meta::protocols::pure::vX_X_X::transformation::fromPureGraph::connection::store::service::transformAuthentication($extensions)))->newMap(),
+                   authSpecs        = $ser.authSpecs->toOne()->keyValues()->map(kv | pair($kv.first,$kv.second->meta::protocols::pure::vX_X_X::transformation::fromPureGraph::authentication::transformAuthentication($extensions)))->newMap(),
 
                    requestBodyDescription = if($ser.requestBodyDescription->isEmpty(),
                                                |[],

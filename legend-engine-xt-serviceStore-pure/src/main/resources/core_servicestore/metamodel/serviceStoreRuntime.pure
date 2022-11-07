@@ -15,6 +15,7 @@
 import meta::pure::runtime::*;
 import meta::external::store::service::metamodel::*;
 import meta::external::store::service::metamodel::runtime::*;
+import meta::pure::authentication::*;
 
 Class meta::external::store::service::metamodel::runtime::ServiceStoreConnection extends Connection
 [
@@ -25,38 +26,3 @@ Class meta::external::store::service::metamodel::runtime::ServiceStoreConnection
    authSpecs: Map<String,Authentication>[0..1];
 }
 
-//TODO: Pull up Authentication metamodels in some top-level module
-Class <<typemodifiers.abstract>> meta::external::store::service::metamodel::runtime::Authentication
-{
-
-}
-
-Class meta::external::store::service::metamodel::runtime::OauthAuthentication extends meta::external::store::service::metamodel::runtime::Authentication
-{
-   grantType: String[1];
-   clientId: String[1];
-   clientSecretVaultReference: String[1];
-   authServerUrl: String[1];
-}
-
-Class meta::external::store::service::metamodel::runtime::UsernamePasswordAuthentication extends meta::external::store::service::metamodel::runtime::Authentication
-{
-   username: String[1];
-   password: String[1];
-}
-
-Class meta::external::store::service::metamodel::runtime::ApiKeyAuthentication extends meta::external::store::service::metamodel::runtime::Authentication
-{
-   value: String[1];
-}
-
-Class meta::external::store::service::metamodel::runtime::Credential
-{
-
-}
-
-
-//Enum meta::external::store::service::metamodel::runtime::OauthGrantType
-//{
-//   ClientCredentials
-//}

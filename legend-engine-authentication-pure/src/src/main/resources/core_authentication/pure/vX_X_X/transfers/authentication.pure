@@ -1,0 +1,50 @@
+// Copyright 2021 Goldman Sachs
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+###Pure
+import meta::pure::extension::*;
+import meta::pure::functions::collection::*;
+
+function meta::protocols::pure::vX_X_X::transformation::fromPureGraph::authentication::transformAuthentication(a:Authentication[1], extensions:Extension[*]):meta::protocols::pure::vX_X_X::metamodel:;authentication::Authentication[1]
+{
+   $a->match($extensions.serializerExtension('vX_X_X')->cast(@meta::protocols::pure::vX_X_X::extension::SerializerExtension_vX_X_X).moduleSerializerExtension('authentication')->cast(@meta::protocols::pure::vX_X_X::extension::authentication::AuthenticationModuleSerializerExtension).transfers_authentication_transformAuthentication->concatenate([
+      o:meta::pure::authentication::OauthAuthentication [1] |
+        ^meta::protocols::pure::vX_X_X::metamodel::authentication::OauthAuthentication(
+            _type = 'oauth',
+            //associatedSecurityScheme = $o.associatedSecurityScheme,
+            grantType = $o.grantType->toString(),
+            clientId = $o.clientId,
+            clientSecretVaultReference = $o.clientSecretVaultReference,
+            authServerUrl = $o.authServerUrl
+        ),
+      u:meta::pure::authentication::UsernamePasswordAuthentication [1] |
+                ^meta::protocols::pure::vX_X_X::metamodel::authentication::UsernamePasswordAuthentication(
+                    _type = 'basic',
+                    //associatedSecurityScheme = $u.associatedSecurityScheme,
+                    username = $u.username,
+                    password = $u.password
+                ),
+      a:meta::pure::authentication:ApiKeyAuthentication [1] |
+                          ^meta::protocols::pure::vX_X_X::metamodel::authentication::ApiKeyAuthentication(
+                              _type = 'apiKey',
+                              //associatedSecurityScheme = $u.associatedSecurityScheme,
+                              value = $a.value
+                          ),
+      other: meta::pure::authentication::Authentication[1] |
+         ^meta::protocols::pure::vX_X_X::metamodel::authentication::Authentication(
+            //associatedSecurityScheme = 'unknown',
+            _type = 'unknown'
+         )
+   ])->toOneMany())
+}

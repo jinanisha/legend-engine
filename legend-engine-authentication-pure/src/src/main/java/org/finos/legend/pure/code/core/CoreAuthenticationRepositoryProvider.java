@@ -12,7 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-Class meta::protocols::pure::vX_X_X::extension::store::service::ServiceStoreModuleSerializerExtension extends meta::protocols::pure::vX_X_X::extension::ModuleSerializerExtension
+package src.main.java.org.finos.legend.pure.code.core;
+
+import org.finos.legend.pure.m3.serialization.filesystem.repository.CodeRepository;
+import org.finos.legend.pure.m3.serialization.filesystem.repository.CodeRepositoryProvider;
+import org.finos.legend.pure.m3.serialization.filesystem.repository.GenericCodeRepository;
+
+public class CoreAuthenticationRepositoryProvider implements CodeRepositoryProvider
 {
-   transfers_securityScheme_transformSecurityScheme : Function<{Nil[1] -> meta::protocols::pure::vX_X_X::metamodel::store::service::SecurityScheme[1]}>[*];
+    @Override
+    public CodeRepository repository()
+    {
+        return GenericCodeRepository.build("core_authentication.definition.json");
+    }
 }
+

@@ -20,6 +20,7 @@ import meta::external::store::service::executionPlan::nodes::*;
 import meta::external::store::service::metamodel::*;
 import meta::external::store::service::metamodel::mapping::*;
 import meta::external::store::service::metamodel::runtime::*;
+import meta::pure::authentication::*;
 
 Class meta::external::store::service::executionPlan::nodes::RestServiceExecutionNode extends ExecutionNode
 {
