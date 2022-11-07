@@ -631,7 +631,7 @@
             <!-- ENGINE -->
             <dependency>
                 <groupId>org.finos.legend.engine</groupId>
-                <artifactId>legend-engine-authentication-purey</artifactId>
+                <artifactId>legend-engine-authentication-pure</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
