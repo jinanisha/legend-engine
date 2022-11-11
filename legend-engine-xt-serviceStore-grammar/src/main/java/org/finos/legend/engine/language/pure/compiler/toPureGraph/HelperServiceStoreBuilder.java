@@ -188,7 +188,7 @@ public class HelperServiceStoreBuilder
         });
     }
 
-    public static List<Pair<String, ? extends Root_meta_external_store_service_metamodel_runtime_Authentication>> compileAuthentication(ServiceStoreConnection serviceStoreConnection, Root_meta_external_store_service_metamodel_runtime_ServiceStoreConnection pureServiceStoreConnection, CompileContext context)
+    public static List<Pair<String, ? extends Root_meta_pure_authentication_Authentication>> compileAuthentication(ServiceStoreConnection serviceStoreConnection, Root_meta_external_store_service_metamodel_runtime_ServiceStoreConnection pureServiceStoreConnection, CompileContext context)
     {
         return serviceStoreConnection.authSpecs.entrySet().stream().map(
                 entry ->
@@ -203,7 +203,7 @@ public class HelperServiceStoreBuilder
             {
                 UsernamePasswordAuthentication usernamePasswordAuthentication = (UsernamePasswordAuthentication) authSpec;
                 return Tuples.pair(securitySchemeId,
-                        new  Root_meta_external_store_service_metamodel_runtime_UsernamePasswordAuthentication_Impl("")
+                        new  Root_meta_pure_authentication_UsernamePasswordAuthentication_Impl("")
                            ._username(usernamePasswordAuthentication.username)
                            ._password(usernamePasswordAuthentication.password));
 
@@ -212,7 +212,7 @@ public class HelperServiceStoreBuilder
            {
                OAuthAuthentication oAuthAuthentication = (OAuthAuthentication) authSpec;
                return Tuples.pair(securitySchemeId,
-                       new Root_meta_external_store_service_metamodel_runtime_OauthAuthentication_Impl("")
+                       new Root_meta_pure_authentication_OauthAuthentication_Impl("")
                           //._grantType(context.pureModel.getEnumValue("meta::external::store::service::metamodel::runtime::OauthGrantType", oAuthAuthentication.grantType.toString()))
                                 ._grantType(oAuthAuthentication.grantType)
                           ._clientId(oAuthAuthentication.clientId)
@@ -223,7 +223,7 @@ public class HelperServiceStoreBuilder
             {
                 ApiKeyAuthentication apiKeyAuthentication = (ApiKeyAuthentication) authSpec;
                 return Tuples.pair(securitySchemeId,
-                        new Root_meta_external_store_service_metamodel_runtime_ApiKeyAuthentication_Impl("")
+                        new Root_meta_pure_authentication_ApiKeyAuthentication_Impl("")
                                 ._value(apiKeyAuthentication.value));
                                
             }

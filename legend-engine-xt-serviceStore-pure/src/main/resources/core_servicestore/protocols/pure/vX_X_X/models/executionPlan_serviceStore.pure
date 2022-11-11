@@ -17,7 +17,7 @@ import meta::protocols::pure::vX_X_X::metamodel::executionPlan::store::service::
 
 import meta::protocols::pure::vX_X_X::metamodel::store::service::*;
 import meta::protocols::pure::vX_X_X::metamodel::store::service::mapping::*;
-import meta::pure::authentication::*;
+import meta::protocols::pure::vX_X_X::metamodel::authentication::*;
 
 Class meta::protocols::pure::vX_X_X::metamodel::executionPlan::store::service::RestServiceExecutionNode extends meta::protocols::pure::vX_X_X::metamodel::executionPlan::ExecutionNode
 {

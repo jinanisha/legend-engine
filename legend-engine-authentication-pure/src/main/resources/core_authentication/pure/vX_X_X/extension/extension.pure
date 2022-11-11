@@ -14,5 +14,5 @@
 
 Class meta::protocols::pure::vX_X_X::extension::authentication::AuthenticationModuleSerializerExtension extends meta::protocols::pure::vX_X_X::extension::ModuleSerializerExtension
 {
-   transfers_authentication_transformAuthentication : Function<{Nil[1] -> meta::protocols::pure::vX_X_X::metamodel::connection::store::service::Authentication[1]}>[*];
+   transfers_authentication_transformAuthentication : Function<{Nil[1] -> meta::protocols::pure::vX_X_X::metamodel::authentication::Authentication[1]}>[*];
 }

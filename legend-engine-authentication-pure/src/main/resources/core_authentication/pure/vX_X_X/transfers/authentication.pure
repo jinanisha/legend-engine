@@ -15,8 +15,10 @@
 ###Pure
 import meta::pure::extension::*;
 import meta::pure::functions::collection::*;
+import meta::pure::authentication::*;
+import meta::protocols::pure::vX_X_X::extension::authentication::*;
 
-function meta::protocols::pure::vX_X_X::transformation::fromPureGraph::authentication::transformAuthentication(a:Authentication[1], extensions:Extension[*]):meta::protocols::pure::vX_X_X::metamodel:;authentication::Authentication[1]
+function meta::protocols::pure::vX_X_X::transformation::fromPureGraph::authentication::transformAuthentication(a:meta::pure::authentication::Authentication[1], extensions:Extension[*]):meta::protocols::pure::vX_X_X::metamodel::authentication::Authentication[1]
 {
    $a->match($extensions.serializerExtension('vX_X_X')->cast(@meta::protocols::pure::vX_X_X::extension::SerializerExtension_vX_X_X).moduleSerializerExtension('authentication')->cast(@meta::protocols::pure::vX_X_X::extension::authentication::AuthenticationModuleSerializerExtension).transfers_authentication_transformAuthentication->concatenate([
       o:meta::pure::authentication::OauthAuthentication [1] |
@@ -35,12 +37,12 @@ function meta::protocols::pure::vX_X_X::transformation::fromPureGraph::authentic
                     username = $u.username,
                     password = $u.password
                 ),
-      a:meta::pure::authentication:ApiKeyAuthentication [1] |
-                          ^meta::protocols::pure::vX_X_X::metamodel::authentication::ApiKeyAuthentication(
-                              _type = 'apiKey',
-                              //associatedSecurityScheme = $u.associatedSecurityScheme,
-                              value = $a.value
-                          ),
+      a:meta::pure::authentication::ApiKeyAuthentication [1] |
+                ^meta::protocols::pure::vX_X_X::metamodel::authentication::ApiKeyAuthentication(
+                      _type = 'apiKey',
+                      //associatedSecurityScheme = $u.associatedSecurityScheme,
+                      value = $a.value
+                ),
       other: meta::pure::authentication::Authentication[1] |
          ^meta::protocols::pure::vX_X_X::metamodel::authentication::Authentication(
             //associatedSecurityScheme = 'unknown',
