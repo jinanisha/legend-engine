@@ -20,6 +20,7 @@ import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authent
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authentication.UsernamePasswordAuthentication;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authentication.ApiKeyAuthentication;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authentication.OAuthAuthentication;
+import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authentication.OauthCredential;
 
 public class AuthenticationSpecificationParseTreeWalker
 {
@@ -51,25 +52,30 @@ public class AuthenticationSpecificationParseTreeWalker
 
     public OAuthAuthentication visitOAuthAuthentication(AuthenticationSpecificationSourceCode code, AuthSpecificationParserGrammar.OauthAuthenticationContext ctx)
     {
-        OAuthAuthentication o = new OAuthAuthentication();
+        OAuthAuthentication oAuthAuthentication = new OAuthAuthentication();
+
+        OauthCredential o = new OauthCredential();
         o.sourceInformation = code.getSourceInformation();
 
-        AuthSpecificationParserGrammar.GrantTypeContext grantTypeContext = PureGrammarParserUtility.validateAndExtractRequiredField(ctx.grantType(), "grantType", o.sourceInformation);
+        AuthSpecificationParserGrammar.OauthCredentialContext oauthCredentialContext = ctx.oauthCredential();
+
+        AuthSpecificationParserGrammar.GrantTypeContext grantTypeContext = PureGrammarParserUtility.validateAndExtractRequiredField(oauthCredentialContext.grantType(), "grantType", o.sourceInformation);
         //o.grantType = OauthGrantType.valueOf(PureGrammarParserUtility.fromGrammarString(grantTypeContext.STRING().getText(), true));
         o.grantType = PureGrammarParserUtility.fromGrammarString(grantTypeContext.STRING().getText(), true);
 
-        AuthSpecificationParserGrammar.ClientIdContext clientIdContext = PureGrammarParserUtility.validateAndExtractRequiredField(ctx.clientId(), "clientId", o.sourceInformation);
+        AuthSpecificationParserGrammar.ClientIdContext clientIdContext = PureGrammarParserUtility.validateAndExtractRequiredField(oauthCredentialContext.clientId(), "clientId", o.sourceInformation);
         o.clientId = PureGrammarParserUtility.fromGrammarString(clientIdContext.STRING().getText(), true);
 
-        AuthSpecificationParserGrammar.ClientSecretContext clientSecretContext = PureGrammarParserUtility.validateAndExtractOptionalField(ctx.clientSecret(), "clientSecret", o.sourceInformation);
+        AuthSpecificationParserGrammar.ClientSecretContext clientSecretContext = PureGrammarParserUtility.validateAndExtractOptionalField(oauthCredentialContext.clientSecret(), "clientSecret", o.sourceInformation);
         if (clientSecretContext != null)
         {
             o.clientSecretVaultReference = PureGrammarParserUtility.fromGrammarString(clientSecretContext.STRING().getText(), true);
         }
 
-        AuthSpecificationParserGrammar.AuthServerUrlContext authServerUrlContext = PureGrammarParserUtility.validateAndExtractRequiredField(ctx.authServerUrl(), "authServerUrl", o.sourceInformation);
+        AuthSpecificationParserGrammar.AuthServerUrlContext authServerUrlContext = PureGrammarParserUtility.validateAndExtractRequiredField(oauthCredentialContext.authServerUrl(), "authServerUrl", o.sourceInformation);
         o.authServerUrl = PureGrammarParserUtility.fromGrammarString(authServerUrlContext.STRING().getText(), true);
 
-        return o;
+        oAuthAuthentication.credential = o;
+        return oAuthAuthentication;
     }
 }

@@ -7,6 +7,8 @@ GRANT_TYPE:                                                 'grantType';
 CLIENT_ID:                                                  'clientId';
 CLIENT_SECRET_VAULT_REFERENCE:                              'clientSecretVaultReference';
 AUTH_SERVER_URL:                                            'authorizationServerUrl';
+TOKEN:                                                      'token';
+OAUTH_CREDENTIAL:                                           'OauthCredential';
 
 BASIC_AUTHENTICATION:                                       'UsernamePasswordAuthentication';
 USERNAME:                                                   'username';

@@ -13,6 +13,12 @@ identifier:                      VALID_STRING
 
 oauthAuthentication:          OAUTH_AUTHENTICATION
                                             BRACE_OPEN
+                                              TOKEN COLON oauthCredential SEMI_COLON
+                                            BRACE_CLOSE
+;
+
+oauthCredential:                           OAUTH_CREDENTIAL
+                                           BRACE_OPEN
                                             (
                                                    grantType
                                                    | clientId

@@ -217,11 +217,12 @@ public class HelperServiceStoreBuilder
                OAuthAuthentication oAuthAuthentication = (OAuthAuthentication) authSpec;
                return Tuples.pair(securitySchemeId,
                        new Root_meta_pure_authentication_OauthAuthentication_Impl("")
+                               ._credential ( new Root_meta_pure_authentication_OauthCredential_Impl("")
                           //._grantType(context.pureModel.getEnumValue("meta::external::store::service::metamodel::runtime::OauthGrantType", oAuthAuthentication.grantType.toString()))
-                                ._grantType(oAuthAuthentication.grantType)
-                          ._clientId(oAuthAuthentication.clientId)
-                          ._clientSecretVaultReference(oAuthAuthentication.clientSecretVaultReference)
-                          ._authServerUrl(oAuthAuthentication.authServerUrl));
+                                ._grantType(oAuthAuthentication.credential.grantType)
+                          ._clientId(oAuthAuthentication.credential.clientId)
+                          ._clientSecretVaultReference(oAuthAuthentication.credential.clientSecretVaultReference)
+                          ._authServerUrl(oAuthAuthentication.credential.authServerUrl)));
            }
            else if (authSpec instanceof ApiKeyAuthentication)
             {

@@ -77,19 +77,25 @@ public class TestServiceStoreAuthGrammarRoundtrip extends TestGrammarRoundtrip.T
                 "  baseUrl: 'http://127.0.0.1:53008';\n" +
                 "  auth: [\n" +
                 "    oauth1 : OauthAuthentication\n" +
-                "    {\n" +
-                "      grantType : 'client_credentials';\n" +
-                "      clientId : 'testClientID';\n" +
-                "      clientSecretVaultReference : 'ref';\n" +
-                "      authorizationServerUrl : 'dummy.com';\n" +
-                "    },\n" +
+                "              {\n" +
+                "                   token : OauthCredential\n" +
+                "                             {\n" +
+                "                                    grantType                   : 'client_credentials';\n" +
+                "                                    clientId                    : 'testClientID';\n" +
+                "                                    clientSecretVaultReference  : 'ref';\n" +
+                "                                    authorizationServerUrl      : 'dummy.com';\n" +
+                "                             };\n" +
+                "              },\n" +
                 "    oauth2 : OauthAuthentication\n" +
-                "    {\n" +
-                "      grantType : 'ClientCredentials';\n" +
-                "      clientId : 'testClientID';\n" +
-                "      clientSecretVaultReference : 'ref';\n" +
-                "      authorizationServerUrl : 'dummy.com';\n" +
-                "    },\n" +
+                "              {\n" +
+                "                   token : OauthCredential\n" +
+                "                             {\n" +
+                "                                    grantType                   : 'client_credentials';\n" +
+                "                                    clientId                    : 'testClientID';\n" +
+                "                                    clientSecretVaultReference  : 'ref';\n" +
+                "                                    authorizationServerUrl      : 'dummy.com';\n" +
+                "                             };\n" +
+                "              }\n" +
                 "    http : UsernamePasswordAuthentication\n" +
                 "    {\n" +
                 "      username : 'username';\n" +

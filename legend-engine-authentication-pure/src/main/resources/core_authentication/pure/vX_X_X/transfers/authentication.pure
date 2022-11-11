@@ -24,11 +24,14 @@ function meta::protocols::pure::vX_X_X::transformation::fromPureGraph::authentic
       o:meta::pure::authentication::OauthAuthentication [1] |
         ^meta::protocols::pure::vX_X_X::metamodel::authentication::OauthAuthentication(
             _type = 'oauth',
+            credential = ^meta::protocols::pure::vX_X_X::metamodel::authentication::OauthCredential(
+            _type = 'oauth',
             //associatedSecurityScheme = $o.associatedSecurityScheme,
-            grantType = $o.grantType->toString(),
-            clientId = $o.clientId,
-            clientSecretVaultReference = $o.clientSecretVaultReference,
-            authServerUrl = $o.authServerUrl
+            grantType = $o.credential.grantType->toString(),
+            clientId = $o.credential.clientId,
+            clientSecretVaultReference = $o.credential.clientSecretVaultReference,
+            authServerUrl = $o.credential.authServerUrl
+            )
         ),
       u:meta::pure::authentication::UsernamePasswordAuthentication [1] |
                 ^meta::protocols::pure::vX_X_X::metamodel::authentication::UsernamePasswordAuthentication(

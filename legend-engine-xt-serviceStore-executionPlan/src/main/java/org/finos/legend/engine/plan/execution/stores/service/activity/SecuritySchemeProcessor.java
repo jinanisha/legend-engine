@@ -55,7 +55,7 @@ public class SecuritySchemeProcessor
             {
                 OAuthAuthentication spec = (OAuthAuthentication) this.authSpecification;
                 //TODO: get token of valid scopes
-                String oauthToken = getOAuthToken(spec.grantType,spec.clientId,spec.clientSecretVaultReference,spec.authServerUrl);
+                String oauthToken = getOAuthToken(spec.credential.grantType,spec.credential.clientId,spec.credential.clientSecretVaultReference,spec.credential.authServerUrl);
                 requestBuilder.addHeader("Authorization", "Bearer " + oauthToken);
                 return true;
             }

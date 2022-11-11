@@ -98,10 +98,13 @@ public class TestServiceStoreAuthGrammarParser extends TestGrammarParser.TestGra
                 "    auth: [\n" +
                 "        oauth     : OauthAuthentication\n" +
                 "              {\n" +
-                "                   grantType                   : 'client_credentials';\n" +
-                "                   clientId                    : 'testClientID';\n" +
-                "                   clientSecretVaultReference  : 'ref';\n" +
-                "                   authorizationServerUrl      : 'dummy.com';\n" +
+                "                   token : OauthCredential\n" +
+                "                             {\n" +
+                "                                   grantType                   : 'client_credentials';\n" +
+                "                                   clientId                    : 'testClientID';\n" +
+                "                                   clientSecretVaultReference  : 'ref';\n" +
+                "                                   authorizationServerUrl      : 'dummy.com';\n" +
+                "                             };\n" +
                 "              }\n" +
                 "    ];\n" +
                 "}");
@@ -166,10 +169,13 @@ public class TestServiceStoreAuthGrammarParser extends TestGrammarParser.TestGra
                 "    auth: [\n" +
                 "        oauth     : OauthAuthentication\n" +
                 "              {\n" +
-                "                   grantType                   : 'client_credentials';\n" +
-                "                   clientId                    : 'testClientID';\n" +
-                "                   clientSecretVaultReference  : 'ref';\n" +
-                "                   authorizationServerUrl      : 'dummy.com';\n" +
+                "                   token : OauthCredential\n" +
+                "                             {\n" +
+                "                                    grantType                   : 'client_credentials';\n" +
+                "                                    clientId                    : 'testClientID';\n" +
+                "                                    clientSecretVaultReference  : 'ref';\n" +
+                "                                    authorizationServerUrl      : 'dummy.com';\n" +
+                "                             };\n" +
                 "              }\n" +
                 "    ];\n" +
                 "}", "PARSER error at [28:10-33]: These security schemes are not defined in ServiceStore - [oauth]");
@@ -237,11 +243,14 @@ public class TestServiceStoreAuthGrammarParser extends TestGrammarParser.TestGra
                 "    auth: [\n" +
                 "        oauth1     : OauthAuthentication\n" +
                 "              {\n" +
-                "                   grantType                   : 'client_credentials';\n" +
-                "                   clientId                    : 'testClientID';\n" +
-                "                   clientSecretVaultReference  : 'ref';\n" +
-                "                   authorizationServerUrl      : 'dummy.com';\n" +
-                "              },\n" +
+                "                   token : OauthCredential\n" +
+                "                             {\n" +
+                "                                    grantType                   : 'client_credentials';\n" +
+                "                                    clientId                    : 'testClientID';\n" +
+                "                                    clientSecretVaultReference  : 'ref';\n" +
+                "                                    authorizationServerUrl      : 'dummy.com';\n" +
+                "                             };\n" +
+                "              }\n" +
                 "       http : UsernamePasswordAuthentication\n" +
                 "             {\n" +
                 "                   username : 'username';\n" +

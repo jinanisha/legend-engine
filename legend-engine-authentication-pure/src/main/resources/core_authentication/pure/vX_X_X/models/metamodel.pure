@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import meta::pure::authentication::*;
+import meta::protocols::pure::vX_X_X::metamodel::authentication::*;
 
 Class <<typemodifiers.abstract>> meta::protocols::pure::vX_X_X::metamodel::authentication::Authentication
 {
@@ -20,6 +20,11 @@ Class <<typemodifiers.abstract>> meta::protocols::pure::vX_X_X::metamodel::authe
 }
 
 Class meta::protocols::pure::vX_X_X::metamodel::authentication::OauthAuthentication extends meta::protocols::pure::vX_X_X::metamodel::authentication::Authentication
+{
+  credential: OauthCredential[1];
+}
+
+Class meta::protocols::pure::vX_X_X::metamodel::authentication::OauthCredential extends meta::protocols::pure::vX_X_X::metamodel::authentication::Authentication
 {
    grantType: String[1];
    clientId: String[1];

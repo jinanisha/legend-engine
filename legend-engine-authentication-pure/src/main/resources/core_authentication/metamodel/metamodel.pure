@@ -21,10 +21,7 @@ Class <<typemodifiers.abstract>> meta::pure::authentication::Authentication
 
 Class meta::pure::authentication::OauthAuthentication extends meta::pure::authentication::Authentication
 {
-   grantType: String[1];
-   clientId: String[1];
-   clientSecretVaultReference: String[1];
-   authServerUrl: String[1];
+   credential: OauthCredential[1];
 }
 
 Class meta::pure::authentication::UsernamePasswordAuthentication extends meta::pure::authentication::Authentication
@@ -41,4 +38,12 @@ Class meta::pure::authentication::ApiKeyAuthentication extends meta::pure::authe
 Class <<typemodifiers.abstract>> meta::pure::authentication::Credential
 {
 
+}
+
+Class meta::pure::authentication::OauthCredential extends meta::pure::authentication::Credential
+{
+    grantType: String[1];
+    clientId: String[1];
+    clientSecretVaultReference: String[1];
+    authServerUrl: String[1];
 }

@@ -356,10 +356,12 @@ public class HelperServiceStoreGrammarComposer
             return getTabString(baseIndentation) + securityScheme +
                     " : OauthAuthentication" +
                     getTabString(baseIndentation) + "{\n" +
-                    getTabString(baseIndentation + 1) + "grantType : " + convertString(spec.grantType.toString(), true) + ";\n" +
-                    getTabString(baseIndentation + 1) + "clientId : " + convertString(spec.clientId, true) + ";\n" +
-                    getTabString(baseIndentation + 1) + "clientSecretVaultReference : " + convertString(spec.clientSecretVaultReference, true) + ";\n" +
-                    getTabString(baseIndentation + 1) + "authorizationServerUrl : " + convertString(spec.authServerUrl, true) + ";\n" +
+                    getTabString(baseIndentation+1) + "token : OauthCredential{ \n" +
+                    getTabString(baseIndentation + 2) + "grantType : " + convertString(spec.credential.grantType.toString(), true) + ";\n" +
+                    getTabString(baseIndentation + 2) + "clientId : " + convertString(spec.credential.clientId, true) + ";\n" +
+                    getTabString(baseIndentation + 2) + "clientSecretVaultReference : " + convertString(spec.credential.clientSecretVaultReference, true) + ";\n" +
+                    getTabString(baseIndentation + 2) + "authorizationServerUrl : " + convertString(spec.credential.authServerUrl, true) + ";\n" +
+                    getTabString(baseIndentation+1) + "};" +
                     getTabString(baseIndentation) + "}";
         }
         else if (a instanceof UsernamePasswordAuthentication)
