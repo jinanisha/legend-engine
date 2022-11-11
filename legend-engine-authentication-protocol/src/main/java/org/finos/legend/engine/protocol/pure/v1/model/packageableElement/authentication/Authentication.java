@@ -1,4 +1,4 @@
-package org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model;
+package org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authentication;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;

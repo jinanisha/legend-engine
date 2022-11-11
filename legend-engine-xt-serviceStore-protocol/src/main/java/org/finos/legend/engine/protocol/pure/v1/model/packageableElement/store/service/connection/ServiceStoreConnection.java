@@ -16,8 +16,7 @@ package org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.
 
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.connection.Connection;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.connection.ConnectionVisitor;
-import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.Authentication;
-
+import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authentication.Authentication;
 import java.util.LinkedHashMap;
 
 public class ServiceStoreConnection extends Connection

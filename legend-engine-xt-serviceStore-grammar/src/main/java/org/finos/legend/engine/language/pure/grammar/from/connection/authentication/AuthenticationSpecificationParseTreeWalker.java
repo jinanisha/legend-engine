@@ -16,9 +16,10 @@ package org.finos.legend.engine.language.pure.grammar.from.connection.authentica
 
 import org.finos.legend.engine.language.pure.grammar.from.PureGrammarParserUtility;
 import org.finos.legend.engine.language.pure.grammar.from.antlr4.connection.authentication.AuthSpecificationParserGrammar;
-import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.ApiKeyAuthentication;
-import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.OAuthAuthentication;
-import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.UsernamePasswordAuthentication;
+import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authentication.Authentication;
+import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authentication.UsernamePasswordAuthentication;
+import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authentication.ApiKeyAuthentication;
+import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authentication.OAuthAuthentication;
 
 public class AuthenticationSpecificationParseTreeWalker
 {

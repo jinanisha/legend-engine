@@ -25,8 +25,8 @@ import org.finos.legend.engine.language.pure.grammar.from.extensions.IServiceSto
 import org.finos.legend.engine.protocol.pure.v1.model.SourceInformation;
 import org.finos.legend.engine.protocol.pure.v1.model.context.EngineErrorType;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.connection.ServiceStoreConnection;
-import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.Authentication;
 import org.finos.legend.engine.shared.core.operational.errorManagement.EngineException;
+import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authentication.Authentication;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
