@@ -27,6 +27,7 @@ import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.s
 import org.finos.legend.engine.shared.core.operational.errorManagement.EngineException;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authentication.Authentication;
 import org.finos.legend.engine.language.pure.grammar.from.authentication.AuthenticationSourceCode;
+import org.finos.legend.engine.language.pure.grammar.from.extensions.IAuthenticationGrammarParserExtension;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -82,8 +83,8 @@ public class ServiceStoreConnectionParseTreeWalker
         );
 
 
-        List<IServiceStoreGrammarParserExtension> extensions = IServiceStoreGrammarParserExtension.getExtensions();
-        Authentication spec = IServiceStoreGrammarParserExtension.process(code, ListIterate.flatCollect(extensions, IServiceStoreGrammarParserExtension::getExtraAuthenticationGenerationSpecificationParsers));
+        List<IAuthenticationGrammarParserExtension> extensions = IAuthenticationGrammarParserExtension.getExtensions();
+        Authentication spec = IAuthenticationGrammarParserExtension.process(code, ListIterate.flatCollect(extensions, IAuthenticationGrammarParserExtension::getExtraAuthenticationGenerationSpecificationParsers));
 
         if (spec == null)
         {
