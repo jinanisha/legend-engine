@@ -354,14 +354,15 @@ public class HelperServiceStoreGrammarComposer
         {
             OAuthAuthentication spec = (OAuthAuthentication) a;
             return getTabString(baseIndentation) + securityScheme +
-                    " : OauthAuthentication" +
+                    " : OauthAuthentication\n" +
                     getTabString(baseIndentation) + "{\n" +
-                    getTabString(baseIndentation+1) + "token : OauthCredential{ \n" +
+                    getTabString(baseIndentation+1) + "token : OauthCredential\n" +
+                    getTabString(baseIndentation+1) + "{\n" +
                     getTabString(baseIndentation + 2) + "grantType : " + convertString(spec.credential.grantType.toString(), true) + ";\n" +
                     getTabString(baseIndentation + 2) + "clientId : " + convertString(spec.credential.clientId, true) + ";\n" +
                     getTabString(baseIndentation + 2) + "clientSecretVaultReference : " + convertString(spec.credential.clientSecretVaultReference, true) + ";\n" +
                     getTabString(baseIndentation + 2) + "authorizationServerUrl : " + convertString(spec.credential.authServerUrl, true) + ";\n" +
-                    getTabString(baseIndentation+1) + "};" +
+                    getTabString(baseIndentation+1) + "};\n" +
                     getTabString(baseIndentation) + "}";
         }
         else if (a instanceof UsernamePasswordAuthentication)

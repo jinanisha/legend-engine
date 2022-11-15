@@ -95,7 +95,7 @@ public class TestServiceStoreAuthGrammarRoundtrip extends TestGrammarRoundtrip.T
                 "                                    clientSecretVaultReference  : 'ref';\n" +
                 "                                    authorizationServerUrl      : 'dummy.com';\n" +
                 "                             };\n" +
-                "              }\n" +
+                "              },\n" +
                 "    http : UsernamePasswordAuthentication\n" +
                 "    {\n" +
                 "      username : 'username';\n" +

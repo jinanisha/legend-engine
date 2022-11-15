@@ -108,7 +108,10 @@ public class ServiceStoreCompilerExtension implements IServiceStoreCompilerExten
                         Root_meta_external_store_service_metamodel_runtime_ServiceStoreConnection pureServiceStoreConnection = new Root_meta_external_store_service_metamodel_runtime_ServiceStoreConnection_Impl("", null, context.pureModel.getClass("meta::external::store::service::metamodel::runtime::ServiceStoreConnection"));
                         pureServiceStoreConnection._element(HelperServiceStoreBuilder.getServiceStore(serviceStoreConnection.element, serviceStoreConnection.elementSourceInformation, context));
                         pureServiceStoreConnection._baseUrl(serviceStoreConnection.baseUrl);
-                        pureServiceStoreConnection._authSpecs(new PureMap(HelperServiceStoreBuilder.compileAuthentication(serviceStoreConnection, pureServiceStoreConnection, context).stream().collect(Collectors.toMap(Pair::getOne,Pair::getTwo))));
+                        if (serviceStoreConnection.authSpecs != null)
+                        {
+                            pureServiceStoreConnection._authSpecs(new PureMap(HelperServiceStoreBuilder.compileAuthentication(serviceStoreConnection, pureServiceStoreConnection, context).stream().collect(Collectors.toMap(Pair::getOne, Pair::getTwo))));
+                        }
                         return pureServiceStoreConnection;
                     }
                     return null;
