@@ -38,6 +38,7 @@
 
         <module>legend-engine-authentication-pure</module>
         <module>legend-engine-authentication-protocol</module>
+        <module>legend-engine-authentication-grammar</module>
 
         <module>legend-engine-xt-graphQL-grammar</module>
         <module>legend-engine-xt-graphQL-grammar-integration</module>
@@ -638,6 +639,11 @@
             <dependency>
                 <groupId>org.finos.legend.engine</groupId>
                 <artifactId>legend-engine-authentication-protocol</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.finos.legend.engine</groupId>
+                <artifactId>legend-engine-authentication-grammar</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

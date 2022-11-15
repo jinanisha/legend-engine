@@ -1,10 +1,10 @@
-parser grammar AuthSpecificationParserGrammar;
+parser grammar AuthenticationParserGrammar;
 
 import CoreParserGrammar;
 
 options
 {
-    tokenVocab = AuthSpecificationLexerGrammar;
+    tokenVocab = AuthenticationLexerGrammar;
 }
 
 identifier:                      VALID_STRING

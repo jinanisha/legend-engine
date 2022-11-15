@@ -78,7 +78,7 @@ public class HelperServiceStoreGrammarComposer
         {
             return "\n" + context.getIndentationString() + getTabString() + "auth: [\n" +
                     serviceStoreConnection. authSpecs.entrySet().stream().map(entry
-                            -> HelperServiceStoreGrammarComposer .renderAuthentication(entry.getKey(), entry.getValue(), 2))
+                            -> HelperAuthenticationGrammarComposer.renderAuthentication(entry.getKey(), entry.getValue(), 2))
                             .collect (Collectors. joining(",\n")) +
                           "\n" + context.getIndentationString() + getTabString() + "];";
         }
@@ -346,44 +346,5 @@ public class HelperServiceStoreGrammarComposer
         {
             return renderServiceGroupPath(serviceGroupPtr.parent) + "." + serviceGroupPtr.serviceGroup;
         }
-    }
-
-    public static String renderAuthentication(String securityScheme, Authentication a, int baseIndentation)
-    {
-        if (a instanceof OAuthAuthentication)
-        {
-            OAuthAuthentication spec = (OAuthAuthentication) a;
-            return getTabString(baseIndentation) + securityScheme +
-                    " : OauthAuthentication\n" +
-                    getTabString(baseIndentation) + "{\n" +
-                    getTabString(baseIndentation+1) + "token : OauthCredential\n" +
-                    getTabString(baseIndentation+1) + "{\n" +
-                    getTabString(baseIndentation + 2) + "grantType : " + convertString(spec.credential.grantType.toString(), true) + ";\n" +
-                    getTabString(baseIndentation + 2) + "clientId : " + convertString(spec.credential.clientId, true) + ";\n" +
-                    getTabString(baseIndentation + 2) + "clientSecretVaultReference : " + convertString(spec.credential.clientSecretVaultReference, true) + ";\n" +
-                    getTabString(baseIndentation + 2) + "authorizationServerUrl : " + convertString(spec.credential.authServerUrl, true) + ";\n" +
-                    getTabString(baseIndentation+1) + "};\n" +
-                    getTabString(baseIndentation) + "}";
-        }
-        else if (a instanceof UsernamePasswordAuthentication)
-        {
-            UsernamePasswordAuthentication spec = (UsernamePasswordAuthentication) a;
-            return  getTabString(baseIndentation) + securityScheme +
-                    " : UsernamePasswordAuthentication\n" +
-                    getTabString(baseIndentation) + "{\n" +
-                    getTabString(baseIndentation + 1) + "username : " + convertString(spec.username.toString(), true) + ";\n" +
-                    getTabString(baseIndentation + 1) + "password : " + convertString(spec.password.toString(), true) + ";\n" +
-                    getTabString(baseIndentation) + "}";
-        }
-        else if (a instanceof ApiKeyAuthentication)
-        {
-            ApiKeyAuthentication spec = (ApiKeyAuthentication) a;
-            return  getTabString(baseIndentation) + securityScheme +
-                    " : ApiKeyAuthentication\n" +
-                    getTabString(baseIndentation) + "{\n" +
-                    getTabString(baseIndentation + 1) + "value : " + convertString(spec.value.toString(), true) + ";\n" +
-                    getTabString(baseIndentation) + "}";
-        }
-        return null;
     }
 }

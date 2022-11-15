@@ -28,7 +28,6 @@ import org.finos.legend.engine.language.pure.grammar.from.antlr4.connection.auth
 import org.finos.legend.engine.language.pure.grammar.from.antlr4.mapping.MappingParserGrammar;
 import org.finos.legend.engine.language.pure.grammar.from.connection.ConnectionValueSourceCode;
 import org.finos.legend.engine.language.pure.grammar.from.connection.ServiceStoreConnectionParseTreeWalker;
-import org.finos.legend.engine.language.pure.grammar.from.connection.authentication.AuthenticationSpecificationSourceCode;
 import org.finos.legend.engine.language.pure.grammar.from.connection.authentication.SecuritySchemeParseTreeWalker;
 import org.finos.legend.engine.language.pure.grammar.from.connection.authentication.SecuritySchemeSourceCode;
 import org.finos.legend.engine.language.pure.grammar.from.data.ServiceStoreEmbeddedDataParser;
@@ -44,10 +43,6 @@ import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.s
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.mapping.RootServiceStoreClassMapping;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.SecurityScheme;
 import org.finos.legend.engine.shared.core.operational.errorManagement.EngineException;
-import org.finos.legend.engine.language.pure.grammar.from.antlr4.connection.authentication.AuthSpecificationLexerGrammar;
-import org.finos.legend.engine.language.pure.grammar.from.antlr4.connection.authentication.AuthSpecificationParserGrammar;
-import org.finos.legend.engine.language.pure.grammar.from.connection.authentication.AuthenticationSpecificationParseTreeWalker;
-import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authentication.Authentication;
 
 import java.util.Collections;
 import java.util.List;
@@ -133,26 +128,6 @@ public class ServiceStoreGrammarParserExtension implements IServiceStoreGrammarP
             }
         });
     }
-
-    public List<Function<AuthenticationSpecificationSourceCode, Authentication>> getExtraAuthenticationGenerationSpecificationParsers()
-    {
-        return Collections.singletonList(code ->
-        {
-            AuthenticationSpecificationParseTreeWalker walker = new AuthenticationSpecificationParseTreeWalker();
-            switch (code.getType())
-            {
-                case "ApiKeyAuthentication":
-                    return parseAuthentication(code, p -> walker.visitApiKeyAuthentication(code,p.apiKeyAuthentication()));
-                case "UsernamePasswordAuthentication":
-                    return parseAuthentication(code, p -> walker.visitUsernamePasswordAuthentication(code, p.basicAuthentication()));
-                case "OauthAuthentication":
-                    return parseAuthentication(code, p -> walker.visitOAuthAuthentication(code, p.oauthAuthentication()));
-                default:
-                    return null;
-            }
-        });
-    }
-
     @Override
     public Iterable<? extends EmbeddedDataParser> getExtraEmbeddedDataParsers()
     {
@@ -206,21 +181,6 @@ public class ServiceStoreGrammarParserExtension implements IServiceStoreGrammarP
         ParserErrorListener errorListener = new ParserErrorListener(code.getWalkerSourceInformation());
         SecuritySchemeLexerGrammar lexer = new SecuritySchemeLexerGrammar(input);
         SecuritySchemeParserGrammar parser = new SecuritySchemeParserGrammar(new CommonTokenStream(lexer));
-
-        lexer.removeErrorListeners();
-        lexer.addErrorListener(errorListener);
-        parser.removeErrorListeners();
-        parser.addErrorListener(errorListener);
-
-        return func.apply(parser);
-    }
-
-    private Authentication parseAuthentication(AuthenticationSpecificationSourceCode code, Function<AuthSpecificationParserGrammar, Authentication> func)
-    {
-        CharStream input = CharStreams.fromString(code.getCode());
-        ParserErrorListener errorListener = new ParserErrorListener(code.getWalkerSourceInformation());
-        AuthSpecificationLexerGrammar lexer = new AuthSpecificationLexerGrammar(input);
-        AuthSpecificationParserGrammar parser = new AuthSpecificationParserGrammar(new CommonTokenStream(lexer));
 
         lexer.removeErrorListeners();
         lexer.addErrorListener(errorListener);

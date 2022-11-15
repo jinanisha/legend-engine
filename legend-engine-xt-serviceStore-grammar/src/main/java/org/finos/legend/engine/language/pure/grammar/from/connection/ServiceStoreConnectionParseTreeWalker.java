@@ -20,13 +20,13 @@ import org.eclipse.collections.impl.utility.ListIterate;
 import org.finos.legend.engine.language.pure.grammar.from.ParseTreeWalkerSourceInformation;
 import org.finos.legend.engine.language.pure.grammar.from.PureGrammarParserUtility;
 import org.finos.legend.engine.language.pure.grammar.from.antlr4.connection.ServiceStoreConnectionParserGrammar;
-import org.finos.legend.engine.language.pure.grammar.from.connection.authentication.AuthenticationSpecificationSourceCode;
 import org.finos.legend.engine.language.pure.grammar.from.extensions.IServiceStoreGrammarParserExtension;
 import org.finos.legend.engine.protocol.pure.v1.model.SourceInformation;
 import org.finos.legend.engine.protocol.pure.v1.model.context.EngineErrorType;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.connection.ServiceStoreConnection;
 import org.finos.legend.engine.shared.core.operational.errorManagement.EngineException;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authentication.Authentication;
+import org.finos.legend.engine.language.pure.grammar.from.authentication.AuthenticationSourceCode;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -74,7 +74,7 @@ public class ServiceStoreConnectionParseTreeWalker
         SourceInformation sourceInformation = walkerSourceInformation.getSourceInformation(ctx);
 
         ServiceStoreConnectionParserGrammar.SingleAuthSpecificationContext specContext = ctx.singleAuthSpecification();
-        AuthenticationSpecificationSourceCode code = new AuthenticationSpecificationSourceCode(
+        AuthenticationSourceCode code = new AuthenticationSourceCode(
                 specContext.getText(),
                 specContext.authSpecificationType().getText(),
                 sourceInformation,

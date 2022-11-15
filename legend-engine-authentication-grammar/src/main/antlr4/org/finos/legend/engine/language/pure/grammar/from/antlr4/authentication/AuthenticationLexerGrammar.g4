@@ -1,4 +1,4 @@
-lexer grammar AuthSpecificationLexerGrammar;
+lexer grammar AuthenticationLexerGrammar;
 
 import CoreLexerGrammar;
 

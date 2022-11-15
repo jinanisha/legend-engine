@@ -110,7 +110,8 @@ public class ServiceStoreCompilerExtension implements IServiceStoreCompilerExten
                         pureServiceStoreConnection._baseUrl(serviceStoreConnection.baseUrl);
                         if (serviceStoreConnection.authSpecs != null)
                         {
-                            pureServiceStoreConnection._authSpecs(new PureMap(HelperServiceStoreBuilder.compileAuthentication(serviceStoreConnection, pureServiceStoreConnection, context).stream().collect(Collectors.toMap(Pair::getOne, Pair::getTwo))));
+                            Root_meta_external_store_service_metamodel_ServiceStore pureServiceStore = HelperServiceStoreBuilder.getServiceStore(serviceStoreConnection.element, serviceStoreConnection.elementSourceInformation, context);
+                            pureServiceStoreConnection._authSpecs(new PureMap(HelperAuthenticationBuilder.compileAuthentication(serviceStoreConnection, pureServiceStore, context).stream().collect(Collectors.toMap(Pair::getOne, Pair::getTwo))));
                         }
                         return pureServiceStoreConnection;
                     }

@@ -24,15 +24,12 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.impl.utility.ListIterate;
 import org.finos.legend.engine.language.pure.grammar.from.ParserErrorListener;
 import org.finos.legend.engine.language.pure.grammar.from.SpecificationSourceCode;
-import org.finos.legend.engine.language.pure.grammar.from.connection.authentication.SecuritySchemeSourceCode;
+import org.finos.legend.engine.language.pure.grammar.from.authentication.AuthenticationSourceCode;
 import org.finos.legend.engine.language.pure.grammar.from.extension.PureGrammarParserExtension;
 import org.finos.legend.engine.protocol.pure.v1.model.context.EngineErrorType;
-import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.IdentifiedSecurityScheme;
-import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.SecurityScheme;
 import org.finos.legend.engine.shared.core.operational.errorManagement.EngineException;
 import org.finos.legend.engine.protocol.pure.v1.model.SourceInformation;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authentication.Authentication;
-import org.finos.legend.engine.language.pure.grammar.from.authentication.AuthenticationSourceCode;
 
 import java.util.Collections;
 import java.util.List;
@@ -40,31 +37,16 @@ import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.function.Function;
 
-public interface IServiceStoreGrammarParserExtension extends PureGrammarParserExtension
+public interface IAuthenticationGrammarParserExtension extends PureGrammarParserExtension
 {
-    static List<IServiceStoreGrammarParserExtension> getExtensions()
+    static List<IAuthenticationGrammarParserExtension> getExtensions()
     {
-        return Lists.mutable.withAll(ServiceLoader.load(IServiceStoreGrammarParserExtension.class));
-    }
-
-    static SecurityScheme process(SecuritySchemeSourceCode code, List<Function<SecuritySchemeSourceCode, SecurityScheme>> processors)
-    {
-        return process(code, processors, "Security Scheme");
-    }
-
-    default void validateSecurity(List<IdentifiedSecurityScheme> supportedSecuritySchemes, SourceInformation sourceInformation, List<SecurityScheme> availableSecuritySchemes)
-    {
-
+        return Lists.mutable.withAll(ServiceLoader.load(IAuthenticationGrammarParserExtension.class));
     }
 
     static Authentication process(AuthenticationSourceCode code, List<Function<AuthenticationSourceCode, Authentication>> processors)
     {
-        return process(code, processors, "Auth Token Generation Specification");
-    }
-
-    default List<Function<SecuritySchemeSourceCode, SecurityScheme>> getExtraSecuritySchemesParsers()
-    {
-        return Collections.emptyList();
+        return process(code, processors, "Authentication");
     }
 
     default List<Function<AuthenticationSourceCode, Authentication>> getExtraAuthenticationGenerationSpecificationParsers()

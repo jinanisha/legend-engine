@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package org.finos.legend.engine.language.pure.grammar.from.connection.authentication;
+package org.finos.legend.engine.language.pure.grammar.from.authentication;
 
 import org.finos.legend.engine.language.pure.grammar.from.ParseTreeWalkerSourceInformation;
 import org.finos.legend.engine.language.pure.grammar.from.SpecificationSourceCode;
 import org.finos.legend.engine.protocol.pure.v1.model.SourceInformation;
 
-public class AuthenticationSpecificationSourceCode extends SpecificationSourceCode
+public class AuthenticationSourceCode extends SpecificationSourceCode
 {
-    public AuthenticationSpecificationSourceCode(String code, String type, SourceInformation sourceInformation, ParseTreeWalkerSourceInformation walkerSourceInformation)
+    public AuthenticationSourceCode(String code, String type, SourceInformation sourceInformation, ParseTreeWalkerSourceInformation walkerSourceInformation)
     {
         super(code, type, sourceInformation, walkerSourceInformation);
     }
