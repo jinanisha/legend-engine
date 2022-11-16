@@ -84,7 +84,7 @@ public class ServiceStoreConnectionParseTreeWalker
 
 
         List<IAuthenticationGrammarParserExtension> extensions = IAuthenticationGrammarParserExtension.getExtensions();
-        Authentication spec = IAuthenticationGrammarParserExtension.process(code, ListIterate.flatCollect(extensions, IAuthenticationGrammarParserExtension::getExtraAuthenticationGenerationSpecificationParsers));
+        Authentication spec = IAuthenticationGrammarParserExtension.process(code, ListIterate.flatCollect(extensions, IAuthenticationGrammarParserExtension::getExtraAuthenticationParsers));
 
         if (spec == null)
         {

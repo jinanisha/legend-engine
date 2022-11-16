@@ -18,14 +18,13 @@ import org.finos.legend.engine.language.pure.grammar.from.ParseTreeWalkerSourceI
 import org.finos.legend.engine.language.pure.grammar.from.SpecificationSourceCode;
 import org.finos.legend.engine.protocol.pure.v1.model.SourceInformation;
 
-public class AuthenticationSourceCode extends SpecificationSourceCode
+public class CredentialSourceCode extends SpecificationSourceCode
 {
     public final String code;
     public final String type;
     public final SourceInformation sourceInformation;
     public final ParseTreeWalkerSourceInformation walkerSourceInformation;
-
-    public AuthenticationSourceCode(String code, String type, SourceInformation sourceInformation, ParseTreeWalkerSourceInformation walkerSourceInformation)
+    public CredentialSourceCode(String code, String type, SourceInformation sourceInformation, ParseTreeWalkerSourceInformation walkerSourceInformation)
     {
         super(code, type, sourceInformation, walkerSourceInformation);
         this.code = code;
@@ -46,7 +45,7 @@ public class AuthenticationSourceCode extends SpecificationSourceCode
 
     public String getCode()
     {
-        return code;
+        return getCode();
     }
 
     public ParseTreeWalkerSourceInformation getWalkerSourceInformation()

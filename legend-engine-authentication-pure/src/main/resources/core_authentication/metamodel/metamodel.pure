@@ -27,7 +27,7 @@ Class meta::pure::authentication::OauthAuthentication extends meta::pure::authen
 Class meta::pure::authentication::UsernamePasswordAuthentication extends meta::pure::authentication::Authentication
 {
    username: String[1];
-   password: String[1];
+   password: VaultCredential[1];
 }
 
 Class meta::pure::authentication::ApiKeyAuthentication extends meta::pure::authentication::Authentication
@@ -46,4 +46,9 @@ Class meta::pure::authentication::OauthCredential extends meta::pure::authentica
     clientId: String[1];
     clientSecretVaultReference: String[1];
     authServerUrl: String[1];
+}
+
+Class meta::pure::authentication::VaultCredential extends meta::pure::authentication::Credential
+{
+    vaultReference: String[1];
 }

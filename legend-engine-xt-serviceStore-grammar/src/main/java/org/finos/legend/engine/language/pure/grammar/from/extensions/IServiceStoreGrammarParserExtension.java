@@ -57,17 +57,12 @@ public interface IServiceStoreGrammarParserExtension extends PureGrammarParserEx
 
     }
 
-    static Authentication process(AuthenticationSourceCode code, List<Function<AuthenticationSourceCode, Authentication>> processors)
-    {
-        return process(code, processors, "Auth Token Generation Specification");
-    }
-
     default List<Function<SecuritySchemeSourceCode, SecurityScheme>> getExtraSecuritySchemesParsers()
     {
         return Collections.emptyList();
     }
 
-    default List<Function<AuthenticationSourceCode, Authentication>> getExtraAuthenticationGenerationSpecificationParsers()
+    default List<Function<AuthenticationSourceCode, Authentication>> getExtraAuthenticationParsers()
     {
         return Collections.emptyList();
     }

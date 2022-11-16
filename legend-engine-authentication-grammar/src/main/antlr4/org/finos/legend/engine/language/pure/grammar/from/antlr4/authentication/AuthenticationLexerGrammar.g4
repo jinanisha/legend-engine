@@ -19,3 +19,12 @@ VALUE:                                                      'value';
 
 BRACKET_OPEN:                                               '[';
 BRACKET_CLOSE:                                              ']';
+
+// -------------------------------------- ISLAND ---------------------------------------
+BRACE_OPEN:                    '{' -> pushMode (CREDENTIAL_ISLAND_MODE);
+
+
+mode CREDENTIAL_ISLAND_MODE;
+CREDENTIAL_ISLAND_OPEN: '{' -> pushMode (CREDENTIAL_ISLAND_MODE);
+CREDENTIAL_ISLAND_CLOSE: '}' -> popMode;
+CREDENTIAL_CONTENT: (~[{}])+;

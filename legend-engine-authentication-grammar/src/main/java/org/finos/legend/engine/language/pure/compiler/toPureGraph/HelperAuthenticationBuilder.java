@@ -22,6 +22,7 @@ import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authent
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authentication.ApiKeyAuthentication;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authentication.UsernamePasswordAuthentication;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authentication.OAuthAuthentication;
+import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authentication.VaultCredential;
 import org.finos.legend.pure.generated.*;
 import org.finos.legend.pure.generated.Root_meta_external_store_service_metamodel_ServiceStore;
 import org.finos.legend.engine.shared.core.operational.errorManagement.EngineException;
@@ -50,7 +51,9 @@ public class HelperAuthenticationBuilder
                 return Tuples.pair(securitySchemeId,
                         new  Root_meta_pure_authentication_UsernamePasswordAuthentication_Impl("")
                            ._username(usernamePasswordAuthentication.username)
-                           ._password(usernamePasswordAuthentication.password));
+                           ._password(new Root_meta_pure_authentication_VaultCredential_Impl("")
+                                   ._vaultReference(((VaultCredential)usernamePasswordAuthentication.password).vaultReference))); //TODO: Validate Authenticaton  Credential Combos
+
 
             }
            else if (authSpec instanceof OAuthAuthentication)

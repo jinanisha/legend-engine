@@ -38,7 +38,11 @@ function meta::protocols::pure::vX_X_X::transformation::fromPureGraph::authentic
                     _type = 'basic',
                     //associatedSecurityScheme = $u.associatedSecurityScheme,
                     username = $u.username,
-                    password = $u.password
+                    password = ^meta::protocols::pure::vX_X_X::metamodel::authentication::VaultCredential(
+                                           _type = 'vault',
+                                           //associatedSecurityScheme = $o.associatedSecurityScheme,
+                                           vaultReference = $u.password.vaultReference
+                                           )
                 ),
       a:meta::pure::authentication::ApiKeyAuthentication [1] |
                 ^meta::protocols::pure::vX_X_X::metamodel::authentication::ApiKeyAuthentication(

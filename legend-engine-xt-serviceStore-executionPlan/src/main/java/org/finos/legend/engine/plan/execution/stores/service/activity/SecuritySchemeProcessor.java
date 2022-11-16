@@ -14,8 +14,10 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.impl.factory.Lists;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.*;
+import org.finos.legend.engine.shared.core.vault.Vault;
 import org.pac4j.core.profile.CommonProfile;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authentication.Authentication;
+import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authentication.VaultCredential;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authentication.UsernamePasswordAuthentication;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authentication.ApiKeyAuthentication;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authentication.OAuthAuthentication;
@@ -47,6 +49,7 @@ public class SecuritySchemeProcessor
             if (securityScheme instanceof SimpleHttpSecurityScheme)
            {
                 UsernamePasswordAuthentication spec = (UsernamePasswordAuthentication) this.authSpecification;
+                String password = Vault.INSTANCE.getValue(((VaultCredentiaL)spec.password).vaultReference);
                 String encoding = Base64.encodeBase64String((spec.username+ ":" + spec.password).getBytes());
                 requestBuilder.addHeader("Authorization", "Basic " + encoding);
                 return true;

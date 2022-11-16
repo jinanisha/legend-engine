@@ -32,10 +32,15 @@ Class meta::protocols::pure::vX_X_X::metamodel::authentication::OauthCredential 
    authServerUrl: String[1];
 }
 
+Class meta::protocols::pure::vX_X_X::metamodel::authentication::VaultCredential extends meta::protocols::pure::vX_X_X::metamodel::authentication::Authentication
+{
+   vaultReference: String[1];
+}
+
 Class meta::protocols::pure::vX_X_X::metamodel::authentication::UsernamePasswordAuthentication extends meta::protocols::pure::vX_X_X::metamodel::authentication::Authentication
 {
    username: String[1];
-   password: String[1];
+   password: VaultCredential[1];
 }
 
 Class meta::protocols::pure::vX_X_X::metamodel::authentication::ApiKeyAuthentication extends meta::protocols::pure::vX_X_X::metamodel::authentication::Authentication

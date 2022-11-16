@@ -16,14 +16,31 @@ package org.finos.legend.engine.language.pure.grammar.from.authentication;
 
 import org.finos.legend.engine.language.pure.grammar.from.PureGrammarParserUtility;
 import org.finos.legend.engine.language.pure.grammar.from.antlr4.authentication.AuthenticationParserGrammar;
+import org.finos.legend.engine.language.pure.grammar.from.antlr4.authentication.CredentialParserGrammar;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authentication.Authentication;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authentication.UsernamePasswordAuthentication;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authentication.ApiKeyAuthentication;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authentication.OAuthAuthentication;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authentication.OauthCredential;
+import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authentication.VaultCredential;
+import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authentication.Credential;
+import org.finos.legend.engine.language.pure.grammar.from.ParseTreeWalkerSourceInformation;
+import org.finos.legend.engine.language.pure.grammar.from.extensions.IAuthenticationGrammarParserExtension;
+import org.finos.legend.engine.shared.core.operational.errorManagement.EngineException;
+import org.finos.legend.engine.protocol.pure.v1.model.context.EngineErrorType;
+import org.finos.legend.engine.protocol.pure.v1.model.SourceInformation;
+import org.eclipse.collections.impl.utility.ListIterate;
+import java.util.List;
 
 public class AuthenticationParseTreeWalker
 {
+
+    private final ParseTreeWalkerSourceInformation walkerSourceInformation;
+
+    public AuthenticationParseTreeWalker(ParseTreeWalkerSourceInformation walkerSourceInformation)
+    {
+        this.walkerSourceInformation = walkerSourceInformation;
+    }
 
     public UsernamePasswordAuthentication visitUsernamePasswordAuthentication(AuthenticationSourceCode code, AuthenticationParserGrammar.BasicAuthenticationContext ctx)
     {
@@ -33,9 +50,13 @@ public class AuthenticationParseTreeWalker
         AuthenticationParserGrammar.UsernameContext usernameContext = PureGrammarParserUtility.validateAndExtractRequiredField(ctx.username(),"username", u.sourceInformation);
         u.username = PureGrammarParserUtility.fromGrammarString(usernameContext.STRING().getText(), true);
 
-        AuthenticationParserGrammar.PasswordContext passwordContext = PureGrammarParserUtility.validateAndExtractRequiredField(ctx.password(), "password", u.sourceInformation);
-        u.password = PureGrammarParserUtility.fromGrammarString(passwordContext.STRING().getText(), true);
+        AuthenticationParserGrammar.PasswordContext passwordContext = PureGrammarParserUtility.validateAndExtractRequiredField(ctx.password(),"password", u.sourceInformation);
 
+        //TODO: Validate type of credential
+        VaultCredential v = (VaultCredential) this.visitCredential(passwordContext.credential());
+        v.sourceInformation = code.getSourceInformation();
+
+        u.password = v;
         return u;
     }
 
@@ -77,5 +98,27 @@ public class AuthenticationParseTreeWalker
 
         oAuthAuthentication.credential = o;
         return oAuthAuthentication;
+    }
+
+    public Credential visitCredential(AuthenticationParserGrammar.CredentialContext ctx)
+    {
+        SourceInformation sourceInformation = walkerSourceInformation.getSourceInformation(ctx);
+
+        CredentialSourceCode code = new CredentialSourceCode(
+                ctx.getText(),
+                ctx.credentialType().getText(),
+                sourceInformation,
+                ParseTreeWalkerSourceInformation.offset(walkerSourceInformation, ctx.getStart())
+        );
+
+        List<IAuthenticationGrammarParserExtension> extensions = IAuthenticationGrammarParserExtension.getExtensions();
+        Credential cred = IAuthenticationGrammarParserExtension.process(code, ListIterate.flatCollect(extensions, IAuthenticationGrammarParserExtension::getExtraCredentialParsers));
+
+        if (cred == null)
+        {
+            throw new EngineException("Unsupported syntax", this.walkerSourceInformation.getSourceInformation(ctx), EngineErrorType.PARSER);
+        }
+
+        return cred;
     }
 }
