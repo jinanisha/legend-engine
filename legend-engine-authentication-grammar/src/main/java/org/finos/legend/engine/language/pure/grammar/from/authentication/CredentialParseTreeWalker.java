@@ -40,5 +40,27 @@ public class CredentialParseTreeWalker
         return v;
     }
 
+    public OauthCredential visitOauthCredential(CredentialSourceCode code, CredentialParserGrammar.OauthCredentialContext oauthCredentialContext)
+    {
+        OauthCredential o = new OauthCredential();
+        o.sourceInformation = code.getSourceInformation();
 
+        CredentialParserGrammar.GrantTypeContext grantTypeContext = PureGrammarParserUtility.validateAndExtractRequiredField(oauthCredentialContext.grantType(), "grantType", o.sourceInformation);
+        //o.grantType = OauthGrantType.valueOf(PureGrammarParserUtility.fromGrammarString(grantTypeContext.STRING().getText(), true));
+        o.grantType = PureGrammarParserUtility.fromGrammarString(grantTypeContext.STRING().getText(), true);
+
+        CredentialParserGrammar.ClientIdContext clientIdContext = PureGrammarParserUtility.validateAndExtractRequiredField(oauthCredentialContext.clientId(), "clientId", o.sourceInformation);
+        o.clientId = PureGrammarParserUtility.fromGrammarString(clientIdContext.STRING().getText(), true);
+
+        CredentialParserGrammar.ClientSecretContext clientSecretContext = PureGrammarParserUtility.validateAndExtractOptionalField(oauthCredentialContext.clientSecret(), "clientSecret", o.sourceInformation);
+        if (clientSecretContext != null)
+        {
+            o.clientSecretVaultReference = PureGrammarParserUtility.fromGrammarString(clientSecretContext.STRING().getText(), true);
+        }
+
+        CredentialParserGrammar.AuthServerUrlContext authServerUrlContext = PureGrammarParserUtility.validateAndExtractRequiredField(oauthCredentialContext.authServerUrl(), "authServerUrl", o.sourceInformation);
+        o.authServerUrl = PureGrammarParserUtility.fromGrammarString(authServerUrlContext.STRING().getText(), true);
+
+        return o;
+    }
 }

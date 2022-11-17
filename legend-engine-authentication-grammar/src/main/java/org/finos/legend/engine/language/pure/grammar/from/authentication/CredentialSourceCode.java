@@ -45,7 +45,7 @@ public class CredentialSourceCode extends SpecificationSourceCode
 
     public String getCode()
     {
-        return getCode();
+        return code;
     }
 
     public ParseTreeWalkerSourceInformation getWalkerSourceInformation()

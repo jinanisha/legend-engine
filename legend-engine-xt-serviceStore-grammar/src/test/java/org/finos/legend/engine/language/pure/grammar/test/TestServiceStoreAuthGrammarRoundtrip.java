@@ -79,27 +79,30 @@ public class TestServiceStoreAuthGrammarRoundtrip extends TestGrammarRoundtrip.T
                 "    oauth1 : OauthAuthentication\n" +
                 "              {\n" +
                 "                   token : OauthCredential\n" +
-                "                             {\n" +
+                "                             (\n" +
                 "                                    grantType                   : 'client_credentials';\n" +
                 "                                    clientId                    : 'testClientID';\n" +
                 "                                    clientSecretVaultReference  : 'ref';\n" +
                 "                                    authorizationServerUrl      : 'dummy.com';\n" +
-                "                             };\n" +
+                "                             );\n" +
                 "              },\n" +
                 "    oauth2 : OauthAuthentication\n" +
                 "              {\n" +
                 "                   token : OauthCredential\n" +
-                "                             {\n" +
+                "                             (\n" +
                 "                                    grantType                   : 'client_credentials';\n" +
                 "                                    clientId                    : 'testClientID';\n" +
                 "                                    clientSecretVaultReference  : 'ref';\n" +
                 "                                    authorizationServerUrl      : 'dummy.com';\n" +
-                "                             };\n" +
+                "                             );\n" +
                 "              },\n" +
                 "    http : UsernamePasswordAuthentication\n" +
                 "    {\n" +
                 "      username : 'username';\n" +
-                "      password : 'password';\n" +
+                "       password : VaultCredential\n" +
+                "                             (\n" +
+                "                                   vaultReference      : 'ref1';\n" +
+                "                             );\n" +
                 "    },\n" +
                 "    api : ApiKeyAuthentication\n" +
                 "    {\n" +

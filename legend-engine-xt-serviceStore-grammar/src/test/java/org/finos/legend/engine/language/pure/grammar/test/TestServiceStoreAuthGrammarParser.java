@@ -96,15 +96,23 @@ public class TestServiceStoreAuthGrammarParser extends TestGrammarParser.TestGra
                 "    store   : meta::external::store::service::showcase::store::TradeProductServiceStore;\n" +
                 "    baseUrl : 'http://127.0.0.1:53008';\n" +
                 "    auth: [\n" +
+                "        http     : UsernamePasswordAuthentication\n" +
+                "              {\n" +
+                "                   username : 'username';\n" +
+                "                   password : VaultCredential\n" +
+                "                             (\n" +
+                "                                   vaultReference      : 'ref1';\n" +
+                "                             );\n" +
+                "              },\n" +
                 "        oauth     : OauthAuthentication\n" +
                 "              {\n" +
                 "                   token : OauthCredential\n" +
-                "                             {\n" +
+                "                             (\n" +
                 "                                   grantType                   : 'client_credentials';\n" +
                 "                                   clientId                    : 'testClientID';\n" +
                 "                                   clientSecretVaultReference  : 'ref';\n" +
                 "                                   authorizationServerUrl      : 'dummy.com';\n" +
-                "                             };\n" +
+                "                             );\n" +
                 "              }\n" +
                 "    ];\n" +
                 "}");
@@ -173,18 +181,21 @@ public class TestServiceStoreAuthGrammarParser extends TestGrammarParser.TestGra
                 "        oauth1     : OauthAuthentication\n" +
                 "              {\n" +
                 "                   token : OauthCredential\n" +
-                "                             {\n" +
+                "                             (\n" +
                 "                                    grantType                   : 'client_credentials';\n" +
                 "                                    clientId                    : 'testClientID';\n" +
                 "                                    clientSecretVaultReference  : 'ref';\n" +
                 "                                    authorizationServerUrl      : 'dummy.com';\n" +
-                "                             };\n" +
+                "                             );\n" +
                 "              }\n" +
-                "       http : UsernamePasswordAuthentication\n" +
-                "             {\n" +
+                "        http     : UsernamePasswordAuthentication\n" +
+                "              {\n" +
                 "                   username : 'username';\n" +
-                "                   password : 'password';\n" +
-                "             },\n" +
+                "                   password : VaultCredential\n" +
+                "                             (\n" +
+                "                                   vaultReference      : 'ref1';\n" +
+                "                             );\n" +
+                "              },\n" +
                 "       api : ApiKeyAuthentication\n" +
                 "             {\n" +
                 "                   value : 'value1';\n" +

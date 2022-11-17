@@ -50,12 +50,12 @@ public class TestServiceStoreSecuritySchemesCompilationFromGrammar  extends Test
                 "        oauth1     : OauthAuthentication\n" +
                 "              {\n" +
                 "                   token : OauthCredential\n" +
-                "                             {\n" +
+                "                             (\n" +
                 "                                    grantType                   : 'client_credentials';\n" +
                 "                                    clientId                    : 'testClientID';\n" +
                 "                                    clientSecretVaultReference  : 'ref';\n" +
                 "                                    authorizationServerUrl      : 'dummy.com';\n" +
-                "                             };\n" +
+                "                             );\n" +
                 "              }\n" +
                 "    ];\n" +
                 "}\n" +
@@ -78,12 +78,12 @@ public class TestServiceStoreSecuritySchemesCompilationFromGrammar  extends Test
                 "        http     : OauthAuthentication\n" +
                 "              {\n" +
                 "                   token : OauthCredential\n" +
-                "                             {\n" +
+                "                             (\n" +
                 "                                    grantType                   : 'client_credentials';\n" +
                 "                                    clientId                    : 'testClientID';\n" +
                 "                                    clientSecretVaultReference  : 'ref';\n" +
                 "                                    authorizationServerUrl      : 'dummy.com';\n" +
-                "                             };\n" +
+                "                             );\n" +
                 "              }\n" +
                 "    ];\n" +
                 "}\n" +

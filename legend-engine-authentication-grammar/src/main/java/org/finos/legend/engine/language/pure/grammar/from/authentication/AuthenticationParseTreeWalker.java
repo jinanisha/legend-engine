@@ -54,7 +54,6 @@ public class AuthenticationParseTreeWalker
 
         //TODO: Validate type of credential
         VaultCredential v = (VaultCredential) this.visitCredential(passwordContext.credential());
-        v.sourceInformation = code.getSourceInformation();
 
         u.password = v;
         return u;
@@ -74,27 +73,12 @@ public class AuthenticationParseTreeWalker
     public OAuthAuthentication visitOAuthAuthentication(AuthenticationSourceCode code, AuthenticationParserGrammar.OauthAuthenticationContext ctx)
     {
         OAuthAuthentication oAuthAuthentication = new OAuthAuthentication();
+        oAuthAuthentication.sourceInformation = code.getSourceInformation();
 
-        OauthCredential o = new OauthCredential();
-        o.sourceInformation = code.getSourceInformation();
+        AuthenticationParserGrammar.TokenContext tokenContext = PureGrammarParserUtility.validateAndExtractRequiredField(ctx.token(),"token", oAuthAuthentication.sourceInformation);
 
-        AuthenticationParserGrammar.OauthCredentialContext oauthCredentialContext = ctx.oauthCredential();
-
-        AuthenticationParserGrammar.GrantTypeContext grantTypeContext = PureGrammarParserUtility.validateAndExtractRequiredField(oauthCredentialContext.grantType(), "grantType", o.sourceInformation);
-        //o.grantType = OauthGrantType.valueOf(PureGrammarParserUtility.fromGrammarString(grantTypeContext.STRING().getText(), true));
-        o.grantType = PureGrammarParserUtility.fromGrammarString(grantTypeContext.STRING().getText(), true);
-
-        AuthenticationParserGrammar.ClientIdContext clientIdContext = PureGrammarParserUtility.validateAndExtractRequiredField(oauthCredentialContext.clientId(), "clientId", o.sourceInformation);
-        o.clientId = PureGrammarParserUtility.fromGrammarString(clientIdContext.STRING().getText(), true);
-
-        AuthenticationParserGrammar.ClientSecretContext clientSecretContext = PureGrammarParserUtility.validateAndExtractOptionalField(oauthCredentialContext.clientSecret(), "clientSecret", o.sourceInformation);
-        if (clientSecretContext != null)
-        {
-            o.clientSecretVaultReference = PureGrammarParserUtility.fromGrammarString(clientSecretContext.STRING().getText(), true);
-        }
-
-        AuthenticationParserGrammar.AuthServerUrlContext authServerUrlContext = PureGrammarParserUtility.validateAndExtractRequiredField(oauthCredentialContext.authServerUrl(), "authServerUrl", o.sourceInformation);
-        o.authServerUrl = PureGrammarParserUtility.fromGrammarString(authServerUrlContext.STRING().getText(), true);
+        //TODO: Validate type of credential
+        OauthCredential o = (OauthCredential) this.visitCredential(tokenContext.credential());
 
         oAuthAuthentication.credential = o;
         return oAuthAuthentication;

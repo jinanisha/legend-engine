@@ -49,8 +49,8 @@ public class SecuritySchemeProcessor
             if (securityScheme instanceof SimpleHttpSecurityScheme)
            {
                 UsernamePasswordAuthentication spec = (UsernamePasswordAuthentication) this.authSpecification;
-                String password = Vault.INSTANCE.getValue(((VaultCredentiaL)spec.password).vaultReference);
-                String encoding = Base64.encodeBase64String((spec.username+ ":" + spec.password).getBytes());
+                String password = Vault.INSTANCE.getValue(((VaultCredential)spec.password).vaultReference);
+                String encoding = Base64.encodeBase64String((spec.username+ ":" + password).getBytes());
                 requestBuilder.addHeader("Authorization", "Basic " + encoding);
                 return true;
             }
@@ -66,7 +66,6 @@ public class SecuritySchemeProcessor
             {
                 ApiKeySecurityScheme scheme = (ApiKeySecurityScheme) securityScheme;
                 ApiKeyAuthentication spec = (ApiKeyAuthentication) this.authSpecification;
-                String value = spec.value;
                 if (scheme.location.equals("Header"))
                 {
                     //TODO

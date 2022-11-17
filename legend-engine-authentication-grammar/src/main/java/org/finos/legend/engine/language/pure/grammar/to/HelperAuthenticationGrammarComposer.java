@@ -33,12 +33,12 @@ public class HelperAuthenticationGrammarComposer
                     " : OauthAuthentication\n" +
                     getTabString(baseIndentation) + "{\n" +
                     getTabString(baseIndentation+1) + "token : OauthCredential\n" +
-                    getTabString(baseIndentation+1) + "{\n" +
+                    getTabString(baseIndentation+1) + "(\n" +
                     getTabString(baseIndentation + 2) + "grantType : " + convertString(spec.credential.grantType.toString(), true) + ";\n" +
                     getTabString(baseIndentation + 2) + "clientId : " + convertString(spec.credential.clientId, true) + ";\n" +
                     getTabString(baseIndentation + 2) + "clientSecretVaultReference : " + convertString(spec.credential.clientSecretVaultReference, true) + ";\n" +
                     getTabString(baseIndentation + 2) + "authorizationServerUrl : " + convertString(spec.credential.authServerUrl, true) + ";\n" +
-                    getTabString(baseIndentation + 1) + "};\n" +
+                    getTabString(baseIndentation + 1) + ");\n" +
                     getTabString(baseIndentation) + "}";
         }
         else if (a instanceof UsernamePasswordAuthentication)
@@ -49,9 +49,9 @@ public class HelperAuthenticationGrammarComposer
                     getTabString(baseIndentation) + "{\n" +
                     getTabString(baseIndentation + 1) + "username : " + convertString(spec.username.toString(), true) + ";\n" +
                     getTabString(baseIndentation + 1) + "password : VaultCredential" +
-                    getTabString(baseIndentation + 1) + "{\n" +
+                    getTabString(baseIndentation + 1) + "(\n" +
                     getTabString(baseIndentation + 2) + "vaultReference : " + convertString(spec.password.toString(), true) + ";\n" +
-                    getTabString(baseIndentation + 1) + "};\n" +
+                    getTabString(baseIndentation + 1) + ");\n" +
                     getTabString(baseIndentation) + "}";
         }
         else if (a instanceof ApiKeyAuthentication)
