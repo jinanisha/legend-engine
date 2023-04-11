@@ -31,11 +31,15 @@ import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.connect
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.mapping.ClassMapping;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.connection.ServiceStoreConnection;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.mapping.RootServiceStoreClassMapping;
+import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.ApiKeySecurityScheme;
+import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.SecurityScheme;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.ServiceStore;
+import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.HttpSecurityScheme;
 
 import java.util.Collections;
 import java.util.List;
 
+import static org.finos.legend.engine.language.pure.grammar.to.PureGrammarComposerUtility.convertString;
 import static org.finos.legend.engine.language.pure.grammar.to.PureGrammarComposerUtility.getTabString;
 
 public class ServiceStoreGrammarComposerExtension implements IServiceStoreGrammarComposerExtension
@@ -100,8 +104,9 @@ public class ServiceStoreGrammarComposerExtension implements IServiceStoreGramma
                 return Tuples.pair(ServiceStoreGrammarParserExtension.SERVICE_STORE_CONNECTION_TYPE,
                         context.getIndentationString() + "{\n" +
                                 context.getIndentationString() + getTabString() + "store: " + serviceStoreConnection.element + ";\n" +
-                                context.getIndentationString() + getTabString() + "baseUrl: " + PureGrammarComposerUtility.convertString(serviceStoreConnection.baseUrl, true) + ";\n" +
-                                context.getIndentationString() + "}");
+                                context.getIndentationString() + getTabString() + "baseUrl: " + PureGrammarComposerUtility.convertString(serviceStoreConnection.baseUrl, true) + ";" +
+                                HelperServiceStoreGrammarComposer.renderAuthenticationSpecificationsMap(serviceStoreConnection.authenticationSpecifications, context) +
+                                context.getIndentationString() + "\n}");
             }
             return null;
         });
@@ -111,5 +116,37 @@ public class ServiceStoreGrammarComposerExtension implements IServiceStoreGramma
     public List<Function2<EmbeddedData, PureGrammarComposerContext, ContentWithType>> getExtraEmbeddedDataComposers()
     {
         return Collections.singletonList(ServiceStoreEmbeddedDataComposer::composeServiceStoreEmbeddedData);
+    }
+
+    @Override
+    public List<Function2<SecurityScheme, Integer, String>> getExtraSecuritySchemesComposers()
+    {
+        return Lists.mutable.with((scheme, baseIndentation) ->
+        {
+            if (scheme instanceof HttpSecurityScheme)
+            {
+                HttpSecurityScheme httpSecurityScheme = (HttpSecurityScheme) scheme;
+                String bearerFormart = "";
+                if (httpSecurityScheme.bearerFormat != null)
+                {
+                    bearerFormart = getTabString(baseIndentation + 1) + "bearerFormat : " + convertString(httpSecurityScheme.bearerFormat, true) + ";\n";
+                }
+                return "Http\n" +
+                        getTabString(baseIndentation) + "{\n" +
+                        getTabString(baseIndentation + 1) + "scheme : " + httpSecurityScheme.scheme.toString().toLowerCase() + ";\n" +
+                        bearerFormart +
+                        getTabString(baseIndentation) + "}";
+            }
+            else if (scheme instanceof ApiKeySecurityScheme)
+            {
+                ApiKeySecurityScheme apiKeySecurityScheme = (ApiKeySecurityScheme) scheme;
+                return "ApiKey\n" +
+                        getTabString(baseIndentation) + "{\n" +
+                        getTabString(baseIndentation + 1) + "location : " + apiKeySecurityScheme.location.toString().toLowerCase() + ";\n" +
+                        getTabString(baseIndentation + 1) + "keyName : " + convertString(apiKeySecurityScheme.keyName, true) + ";\n" +
+                        getTabString(baseIndentation) + "}";
+            }
+            return null;
+        });
     }
 }

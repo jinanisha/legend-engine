@@ -19,13 +19,17 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.block.function.Function2;
 import org.finos.legend.engine.language.pure.grammar.from.antlr4.ServiceStoreLexerGrammar;
 import org.finos.legend.engine.language.pure.grammar.from.antlr4.ServiceStoreParserGrammar;
 import org.finos.legend.engine.language.pure.grammar.from.antlr4.connection.ServiceStoreConnectionLexerGrammar;
 import org.finos.legend.engine.language.pure.grammar.from.antlr4.connection.ServiceStoreConnectionParserGrammar;
+import org.finos.legend.engine.language.pure.grammar.from.antlr4.securityScheme.SecuritySchemeLexerGrammar;
+import org.finos.legend.engine.language.pure.grammar.from.antlr4.securityScheme.SecuritySchemeParserGrammar;
 import org.finos.legend.engine.language.pure.grammar.from.antlr4.mapping.MappingParserGrammar;
 import org.finos.legend.engine.language.pure.grammar.from.connection.ConnectionValueSourceCode;
 import org.finos.legend.engine.language.pure.grammar.from.connection.ServiceStoreConnectionParseTreeWalker;
+import org.finos.legend.engine.language.pure.grammar.from.securityScheme.SecuritySchemeParseTreeWalker;
 import org.finos.legend.engine.language.pure.grammar.from.data.ServiceStoreEmbeddedDataParser;
 import org.finos.legend.engine.language.pure.grammar.from.extension.ConnectionValueParser;
 import org.finos.legend.engine.language.pure.grammar.from.extension.MappingElementParser;
@@ -37,9 +41,15 @@ import org.finos.legend.engine.protocol.pure.v1.model.context.EngineErrorType;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.section.DefaultCodeSection;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.connection.ServiceStoreConnection;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.mapping.RootServiceStoreClassMapping;
+import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.SecurityScheme;
+import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.SecuritySchemeRequirement;
+import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.SingleSecuritySchemeRequirement;
 import org.finos.legend.engine.shared.core.operational.errorManagement.EngineException;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 public class ServiceStoreGrammarParserExtension implements IServiceStoreGrammarParserExtension
 {
@@ -91,15 +101,33 @@ public class ServiceStoreGrammarParserExtension implements IServiceStoreGrammarP
     @Override
     public Iterable<? extends ConnectionValueParser> getExtraConnectionParsers()
     {
-        return Collections.singletonList(ConnectionValueParser.newParser(SERVICE_STORE_CONNECTION_TYPE, connectionValueSourceCode ->
+        return Collections.singletonList(ConnectionValueParser.newParser(SERVICE_STORE_CONNECTION_TYPE, (connectionValueSourceCode, extensions) ->
         {
             SourceCodeParserInfo parserInfo = getServiceStoreConnectionParserInfo(connectionValueSourceCode);
-            ServiceStoreConnectionParseTreeWalker walker = new ServiceStoreConnectionParseTreeWalker(parserInfo.walkerSourceInformation);
+            ServiceStoreConnectionParseTreeWalker walker = new ServiceStoreConnectionParseTreeWalker(parserInfo.walkerSourceInformation, extensions);
             ServiceStoreConnection connectionValue = new ServiceStoreConnection();
             connectionValue.sourceInformation = connectionValueSourceCode.sourceInformation;
             walker.visitServiceStoreConnectionValue((ServiceStoreConnectionParserGrammar.DefinitionContext) parserInfo.rootContext, connectionValue, connectionValueSourceCode.isEmbedded);
             return connectionValue;
         }));
+    }
+
+    @Override
+    public List<Function<SpecificationSourceCode, SecurityScheme>> getExtraSecuritySchemeParsers()
+    {
+        return Lists.mutable.with(code ->
+        {
+            SecuritySchemeParseTreeWalker walker = new SecuritySchemeParseTreeWalker();
+            switch (code.getType())
+            {
+                case "Http":
+                    return parseSecurityScheme(code, p -> walker.visitHttpSecurityScheme(code, p.httpSecurityScheme()));
+                case "ApiKey":
+                    return parseSecurityScheme(code, p -> walker.visitApiKeySecurityScheme(code, p.apiKeySecurityScheme()));
+                default:
+                    return null;
+            }
+        });
     }
 
     @Override
@@ -147,5 +175,20 @@ public class ServiceStoreGrammarParserExtension implements IServiceStoreGrammarP
         parser.removeErrorListeners();
         parser.addErrorListener(errorListener);
         return new SourceCodeParserInfo(sectionSourceCode.code, input, sectionSourceCode.sourceInformation, sectionSourceCode.walkerSourceInformation, lexer, parser, parser.definition());
+    }
+
+    private SecurityScheme parseSecurityScheme(SpecificationSourceCode code, Function<SecuritySchemeParserGrammar, SecurityScheme> func)
+    {
+        CharStream input = CharStreams.fromString(code.getCode());
+        ParserErrorListener errorListener = new ParserErrorListener(code.getWalkerSourceInformation());
+        SecuritySchemeLexerGrammar lexer = new SecuritySchemeLexerGrammar(input);
+        SecuritySchemeParserGrammar parser = new SecuritySchemeParserGrammar(new CommonTokenStream(lexer));
+
+        lexer.removeErrorListeners();
+        lexer.addErrorListener(errorListener);
+        parser.removeErrorListeners();
+        parser.addErrorListener(errorListener);
+
+        return func.apply(parser);
     }
 }

@@ -14,7 +14,7 @@ unquotedIdentifier:                         VALID_STRING
                                             | ALL | LET | ALL_VERSIONS | ALL_VERSIONS_IN_RANGE
                                             | BYTE_STREAM_FUNCTION      // from M3Parser
                                             | SERVICE_STORE
-                                            | DESCRIPTION | SERVICE_GROUP | SERVICE
+                                            | DESCRIPTION | SECURITY_SCHEMES | SERVICE_GROUP | SERVICE
                                             | PATH | REQUEST_BODY | METHOD | PARAMETERS | RESPONSE | SECURITY_SCHEME
                                             | ALLOW_RESERVED | REQUIRED | LOCATION | STYLE | EXPLODE | ENUM
                                             | SERVICE_MAPPING | PATH_OFFSET | REQUEST | BODY | SERVICE_REFERENCE
@@ -31,12 +31,37 @@ definition:                                 (serviceStore)*
 ;
 serviceStore:                               SERVICE_STORE qualifiedName
                                                 PAREN_OPEN
-                                                    ( description )?
-                                                    ( serviceStoreElement )*
+                                                (
+                                                    description |
+                                                    securitySchemes |
+                                                    serviceStoreElement
+                                                )*
                                                 PAREN_CLOSE
 ;
 description:                                DESCRIPTION COLON identifier SEMI_COLON
 ;
+securitySchemes:                            SECURITY_SCHEMES COLON
+                                                 BRACE_OPEN
+                                                       ( securitySchemeObject ( COMMA securitySchemeObject )* )?
+                                                 BRACE_CLOSE
+                                            SEMI_COLON
+;
+
+securitySchemeObject:                       identifier COLON singleSecurityScheme
+;
+
+singleSecurityScheme:                       securitySchemeType (securitySchemeBody)?
+;
+
+securitySchemeType:                         VALID_STRING
+;
+
+securitySchemeBody:                         BRACE_OPEN (securitySchemeBodyValue)*
+;
+
+securitySchemeBodyValue:                    SECURITY_SCHEME_ISLAND_OPEN | SECURITY_SCHEME_CONTENT | SECURITY_SCHEME_ISLAND_CLOSE
+;
+
 serviceStoreElement:                        (service | serviceGroup)
 ;
 

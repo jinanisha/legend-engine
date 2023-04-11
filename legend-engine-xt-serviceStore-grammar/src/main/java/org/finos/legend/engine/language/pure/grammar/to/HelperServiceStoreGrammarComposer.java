@@ -14,10 +14,13 @@
 
 package org.finos.legend.engine.language.pure.grammar.to;
 
+import org.eclipse.collections.api.block.function.Function2;
 import org.eclipse.collections.impl.list.mutable.ListAdapter;
 import org.eclipse.collections.impl.utility.ListIterate;
+import org.finos.legend.engine.language.pure.dsl.authentication.grammar.to.IAuthenticationGrammarComposerExtension;
 import org.finos.legend.engine.protocol.pure.v1.model.SourceInformation;
 import org.finos.legend.engine.protocol.pure.v1.model.context.EngineErrorType;
+import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.authentication.specification.AuthenticationSpecification;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.mapping.LocalMappingProperty;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.mapping.RootServiceStoreClassMapping;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.mapping.ServiceMapping;
@@ -37,13 +40,16 @@ import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.s
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.ServicePtr;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.ServiceStore;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.ServiceStoreElement;
+import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.SingleSecuritySchemeRequirement;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.StringTypeReference;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.TypeReference;
 import org.finos.legend.engine.shared.core.operational.errorManagement.EngineException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.finos.legend.engine.language.pure.grammar.from.ServiceStoreParseTreeWalker.SERVICE_MAPPING_PATH_PREFIX;
 import static org.finos.legend.engine.language.pure.grammar.to.PureGrammarComposerUtility.getTabString;
@@ -61,10 +67,37 @@ public class HelperServiceStoreGrammarComposer
         {
             builder.append("description : ").append("'").append(serviceStore.description).append("'").append(";\n\n");
         }
+
+        renderSecuritySchemesMap(serviceStore.securitySchemes, builder, baseIndentation);
         renderServiceStoreElements(serviceStore.elements, builder, baseIndentation);
 
         builder.append(")");
         return builder.toString();
+    }
+
+    public static void renderSecuritySchemesMap(Map<String, SecurityScheme> securitySchemesMap, StringBuilder builder, int baseIndentation)
+    {
+        if (securitySchemesMap != null && !securitySchemesMap.isEmpty())
+        {
+            List<String> securitySchemes = securitySchemesMap.entrySet().stream().map(x -> renderSecurityScheme(x.getKey(), x.getValue(),baseIndentation + 1)).collect(Collectors.toList());
+
+            builder.append(getTabString(baseIndentation)).append("securitySchemes ").append(":\n").append(getTabString(baseIndentation)).append("{\n");
+            builder.append(String.join(",\n",securitySchemes)).append("\n");
+            builder.append(getTabString(baseIndentation)).append("};\n");
+        }
+    }
+
+    public static String renderAuthenticationSpecificationsMap(Map<String,AuthenticationSpecification> authenticationSpecificationMap, PureGrammarComposerContext context)
+    {
+        if (authenticationSpecificationMap != null && !authenticationSpecificationMap.isEmpty())
+        {
+            Stream<String> authSpecs = authenticationSpecificationMap.entrySet().stream().map(entry -> renderAuthenticationSpecification(entry.getKey(), entry.getValue(), 2, context));
+            return "\n" + context.getIndentationString() + getTabString() +
+                    "authentication:\n" + getTabString(1) + "{\n" +
+                    getTabString(1) + authSpecs.collect(Collectors.joining(",\n" + getTabString(1))) +
+                    "\n" + context.getIndentationString() + getTabString() + "};";
+        }
+        return "";
     }
 
     private static void renderServiceStoreElements(List<ServiceStoreElement> elements, StringBuilder builder, int baseIndentation)
@@ -105,7 +138,7 @@ public class HelperServiceStoreGrammarComposer
         }
         builder.append(getTabString(baseIndentation + 1)).append("response : ").append(renderTypeReference(service.response)).append(";\n");
         builder.append(getTabString(baseIndentation + 1)).append("security : [")
-                .append(String.join(",", ListIterate.collect(service.security, HelperServiceStoreGrammarComposer::renderAuthenticationStrategy)))
+                .append(String.join(",", ListIterate.collect(service.securitySchemeRequirements, s -> ((SingleSecuritySchemeRequirement)s).securitySchemeId)))
                 .append("];\n");
 
         builder.append(getTabString(baseIndentation)).append(")\n");
@@ -195,15 +228,20 @@ public class HelperServiceStoreGrammarComposer
         return builder.toString();
     }
 
-    private static String renderAuthenticationStrategy(SecurityScheme securityScheme)
+    private static String renderSecurityScheme(String id, SecurityScheme securityScheme, int baseIndentation)
     {
-        List<Function<SecurityScheme, String>> processors = ListIterate.flatCollect(IServiceStoreGrammarComposerExtension.getExtensions(), ext -> ext.getExtraSecuritySchemesComposers());
+        List<Function2<SecurityScheme, Integer, String>> processors = ListIterate.flatCollect(IServiceStoreGrammarComposerExtension.getExtensions(), ext -> ext.getExtraSecuritySchemesComposers());
 
-        return ListIterate
-                .collect(processors, processor -> processor.apply(securityScheme))
+        return getTabString(baseIndentation) + id + " : "  +
+                ListIterate.collect(processors, processor -> processor.value(securityScheme, baseIndentation))
                 .select(Objects::nonNull)
                 .getFirstOptional()
-                .orElseThrow(() -> new EngineException("Unsupported SecurityScheme - " + securityScheme.getClass().getSimpleName(), securityScheme.sourceInformation, EngineErrorType.PARSER));
+                .orElseThrow(() -> new EngineException("Unsupported securityScheme - " + securityScheme.getClass().getSimpleName(), securityScheme.sourceInformation, EngineErrorType.PARSER));
+    }
+
+    private static String renderAuthenticationSpecification(String id, AuthenticationSpecification authenticationSpec, int baseIndentation, PureGrammarComposerContext context)
+    {
+        return getTabString(1) + id + " : "  + IAuthenticationGrammarComposerExtension.renderAuthentication(authenticationSpec,baseIndentation,context);
     }
 
     // -------------------------------------- CLASS MAPPING --------------------------------------

@@ -18,6 +18,15 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.impl.utility.ListIterate;
+import org.finos.legend.authentication.credentialprovider.CredentialProviderProvider;
+import org.finos.legend.authentication.credentialprovider.impl.ApikeyCredentialProvider;
+import org.finos.legend.authentication.credentialprovider.impl.UserPasswordCredentialProvider;
+import org.finos.legend.authentication.intermediationrule.IntermediationRuleProvider;
+import org.finos.legend.authentication.intermediationrule.impl.ApiKeyFromVaultRule;
+import org.finos.legend.authentication.intermediationrule.impl.UserPasswordFromVaultRule;
+import org.finos.legend.authentication.vault.CredentialVaultProvider;
+import org.finos.legend.authentication.vault.impl.PropertiesFileCredentialVault;
+import org.finos.legend.authentication.vault.impl.SystemPropertiesCredentialVault;
 import org.finos.legend.engine.language.pure.compiler.Compiler;
 import org.finos.legend.engine.language.pure.compiler.toPureGraph.HelperValueSpecificationBuilder;
 import org.finos.legend.engine.language.pure.compiler.toPureGraph.PureModel;
@@ -28,6 +37,7 @@ import org.finos.legend.engine.plan.execution.result.Result;
 import org.finos.legend.engine.plan.execution.result.json.JsonStreamToJsonDefaultSerializer;
 import org.finos.legend.engine.plan.execution.result.json.JsonStreamingResult;
 import org.finos.legend.engine.plan.execution.stores.inMemory.plugin.InMemory;
+import org.finos.legend.engine.plan.execution.stores.service.plugin.ServiceStoreExecutionConfiguration;
 import org.finos.legend.engine.plan.execution.stores.service.plugin.ServiceStoreExecutorBuilder;
 import org.finos.legend.engine.plan.generation.PlanGenerator;
 import org.finos.legend.engine.plan.generation.transformers.LegendPlanTransformers;
@@ -50,11 +60,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Map;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 public class ServiceStoreTestUtils
 {
-    private static PlanExecutor planExecutor = PlanExecutor.newPlanExecutor(new ServiceStoreExecutorBuilder().build(), InMemory.build());
+    private static ServiceStoreExecutionConfiguration serviceStoreExecutionConfiguration = ServiceStoreExecutionConfiguration.builder().withCredentialProviderProvider(configureCredentialProviders()).build();
+    private static PlanExecutor planExecutor = PlanExecutor.newPlanExecutor(new ServiceStoreExecutorBuilder().build(serviceStoreExecutionConfiguration), InMemory.build());
 
     public static String readGrammarFromPureFile(String path)
     {
@@ -128,5 +140,28 @@ public class ServiceStoreTestUtils
 
         JsonStreamingResult result = (JsonStreamingResult) planExecutor.execute(singleExecutionPlan, vars, (String) null, Lists.mutable.with(new KerberosProfile(LocalCredentials.INSTANCE)), null);
         return result.flush(new JsonStreamToJsonDefaultSerializer(result));
+    }
+
+    private static CredentialProviderProvider configureCredentialProviders()
+    {
+        Properties properties = new Properties();
+        properties.setProperty("property1", "value1");
+        CredentialVaultProvider credentialVaultProvider = CredentialVaultProvider.builder()
+                .with(new SystemPropertiesCredentialVault())
+                .with(new PropertiesFileCredentialVault(properties))
+                .build();
+
+        IntermediationRuleProvider intermediationRuleProvider = IntermediationRuleProvider.builder()
+                .with(new ApiKeyFromVaultRule(credentialVaultProvider))
+                .with(new UserPasswordFromVaultRule(credentialVaultProvider))
+                .build();
+
+        CredentialProviderProvider credentialProviderProvider = CredentialProviderProvider.builder()
+                .with(new UserPasswordCredentialProvider())
+                .with(new ApikeyCredentialProvider())
+                .with(intermediationRuleProvider)
+                .build();
+
+        return credentialProviderProvider;
     }
 }

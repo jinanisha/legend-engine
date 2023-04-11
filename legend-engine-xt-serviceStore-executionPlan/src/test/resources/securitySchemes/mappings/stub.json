@@ -1,0 +1,33 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "/trades/allTradesService",
+        "basicAuthCredentials": {
+          "username": "username",
+          "password": "password"
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "s_tradeId,s_traderDetails,s_tradeDetails\n1,abc:F_Name_1:L_Name_1,30:100\n2,abc:F_Name_1:L_Name_1,31:200\n3,abc:F_Name_2:L_Name_2,30:300\n4,abc:F_Name_2:L_Name_2,31:400"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/trades/allTradesService2",
+        "cookies": {
+          "apiKey1": {
+            "equalTo": "value1"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "s_tradeId,s_traderDetails,s_tradeDetails\n1,abc:F_Name_1:L_Name_1,30:100\n2,abc:F_Name_1:L_Name_1,31:200\n3,abc:F_Name_2:L_Name_2,30:300\n4,abc:F_Name_2:L_Name_2,31:400"
+      }
+    }
+  ]
+}

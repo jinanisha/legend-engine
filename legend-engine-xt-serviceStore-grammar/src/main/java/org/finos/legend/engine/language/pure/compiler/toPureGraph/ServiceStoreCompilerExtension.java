@@ -32,6 +32,9 @@ import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.externa
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.mapping.ClassMapping;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.connection.ServiceStoreConnection;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.mapping.RootServiceStoreClassMapping;
+import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.ApiKeySecurityScheme;
+import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.HttpSecurityScheme;
+import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.SecurityScheme;
 import org.finos.legend.engine.protocol.pure.v1.model.packageableElement.store.service.model.ServiceStore;
 import org.finos.legend.pure.generated.*;
 import org.finos.legend.pure.m3.coreinstance.meta.pure.mapping.EmbeddedSetImplementation;
@@ -102,15 +105,41 @@ public class ServiceStoreCompilerExtension implements IServiceStoreCompilerExten
                         ServiceStoreConnection serviceStoreConnection = (ServiceStoreConnection) connectionValue;
 
                         Root_meta_external_store_service_metamodel_runtime_ServiceStoreConnection pureServiceStoreConnection = new Root_meta_external_store_service_metamodel_runtime_ServiceStoreConnection_Impl("", null, context.pureModel.getClass("meta::external::store::service::metamodel::runtime::ServiceStoreConnection"));
-                        pureServiceStoreConnection._element(HelperServiceStoreBuilder.getServiceStore(serviceStoreConnection.element, serviceStoreConnection.elementSourceInformation, context));
+                        Root_meta_external_store_service_metamodel_ServiceStore pureServiceStore = HelperServiceStoreBuilder.getServiceStore(serviceStoreConnection.element, serviceStoreConnection.elementSourceInformation, context);
+                        pureServiceStoreConnection._element(pureServiceStore);
                         pureServiceStoreConnection._baseUrl(serviceStoreConnection.baseUrl);
-                        HelperServiceStoreBuilder.compileAndAddAuthenticationSpecifications(pureServiceStoreConnection,serviceStoreConnection.authenticationSpecifications,context);
+                        HelperServiceStoreBuilder.compileAndAddAuthenticationSpecifications(pureServiceStoreConnection, serviceStoreConnection.authenticationSpecifications, pureServiceStore._securitySchemes().getMap(), context);
                         return pureServiceStoreConnection;
                     }
                     return null;
                 }
         );
     }
+
+    @Override
+    public List<Function2<SecurityScheme, CompileContext, Root_meta_external_store_service_metamodel_SecurityScheme>> getExtraSecurityProcessors()
+    {
+        return Lists.mutable.with((scheme, context) ->
+        {
+            if (scheme instanceof HttpSecurityScheme)
+            {
+                HttpSecurityScheme httpSecurityScheme = (HttpSecurityScheme) scheme;
+                return new Root_meta_external_store_service_metamodel_HttpSecurityScheme_Impl("", null, context.pureModel.getClass("meta::external::store::service::metamodel::HttpSecurityScheme"))
+                        ._scheme(context.resolveEnumValue("meta::external::store::service::metamodel::Scheme", httpSecurityScheme.scheme.name()))
+                        ._bearerFormat(httpSecurityScheme.bearerFormat);
+
+            }
+            else if (scheme instanceof ApiKeySecurityScheme)
+            {
+                ApiKeySecurityScheme apiKeySecurityScheme = (ApiKeySecurityScheme) scheme;
+                return new Root_meta_external_store_service_metamodel_ApiKeySecurityScheme_Impl("", null, context.pureModel.getClass("meta::external::store::service::metamodel::ApiKeySecurityScheme"))
+                        ._location(context.resolveEnumValue("meta::external::store::service::metamodel::ApiKeyLocation", apiKeySecurityScheme.location.name()))
+                        ._keyName(apiKeySecurityScheme.keyName);
+            }
+            return null;
+        });
+    }
+
 
     @Override
     public List<Procedure<Procedure2<String, List<String>>>> getExtraElementForPathToElementRegisters()
