@@ -1,0 +1,25 @@
+Configuration is expected to be mounted /etc/trino as per https://github.com/trinodb/trino/blob/master/core/docker/README.md
+Make sure all the config files are present in the right directory : https://trino.io/docs/current/security/password-file.html#password-authenticator-configuration
+
+#Run trino
+docker run -p 8080:8080 -e AWS_ACCESS_KEY_ID=minioadmin -e AWS_SECRET_KEY=minioadmin --network host --volume $PWD/trino/core/docker/default/etc:/etc/trino --name trino trinodb/trino
+
+anisha@Anishas-MacBook-Pro Desktop % docker exec -it trino trino --user test
+trino> select current_user;
+ _col0
+-------
+ test
+(1 row)
+
+
+anisha@Anishas-MacBook-Pro Desktop % docker exec -it trino trino --user=test --password
+Password:
+java.lang.IllegalArgumentException: Authentication using username/password requires HTTPS to be enabled
+	at com.google.common.base.Preconditions.checkArgument(Preconditions.java:143)
+	at io.trino.cli.QueryRunner.setupBasicAuth(QueryRunner.java:176)
+
+
+
+References :
+1/https://trino.io/docs/current/develop/system-access-control.html
+2/Setup using : https://trino.io/docs/current/security/password-file.html#password-authenticator-configuration
